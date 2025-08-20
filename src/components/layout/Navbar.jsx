@@ -1,11 +1,13 @@
 import { useState } from "react";
 import SignupModal from "../Auth/SignupModal";
+import LoginModal from "../Auth/LoginModal"; // import Login modal
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
   const { isDark, toggleTheme } = useTheme();
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Icon color based on theme
   const iconColor = isDark ? "text-white" : "text-gray-600";
@@ -32,7 +34,7 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
           </h1>
         </div>
 
-        {/* Right side: Theme toggle + Signup */}
+        {/* Right side: Theme toggle + Signup/Login */}
         <div className="flex items-center gap-3">
           {/* Theme toggle */}
           <button
@@ -47,6 +49,14 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
             )}
           </button>
 
+          {/* Login button */}
+          <button
+            onClick={() => setIsLoginOpen(true)}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors font-medium"
+          >
+            Log In
+          </button>
+
           {/* Sign Up button */}
           <button
             onClick={() => setIsSignupOpen(true)}
@@ -57,8 +67,24 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
         </div>
       </nav>
 
-      {/* Signup Modal */}
-      <SignupModal isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} />
+      {/* Modals */}
+      <SignupModal
+        isOpen={isSignupOpen}
+        onClose={() => setIsSignupOpen(false)}
+        onSwitchToLogin={() => {
+          setIsSignupOpen(false);
+          setIsLoginOpen(true);
+        }}
+      />
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onSwitchToSignup={() => {
+          setIsLoginOpen(false);
+          setIsSignupOpen(true);
+        }}
+      />
     </>
   );
 }

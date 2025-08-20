@@ -3,16 +3,16 @@ import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Lock, X } from "lucide-react";
+import { Mail, Lock, X } from "lucide-react";
 
-export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
+  const [form, setForm] = useState({ email: "", password: "" });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Signup data:", form);
+    console.log("Login data:", form);
     // 👉 Call API here
     onClose();
   };
@@ -47,28 +47,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
 
               <CardContent className="p-8">
                 <h1 className="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-gray-100">
-                  Create an Account
+                  Log In
                 </h1>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                      Full Name
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <Input
-                        type="text"
-                        name="name"
-                        placeholder="John Doe"
-                        value={form.name}
-                        onChange={handleChange}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                       Email Address
@@ -106,17 +88,17 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                   </div>
 
                   <Button type="submit" className="w-full rounded-xl text-base">
-                    Sign Up
+                    Log In
                   </Button>
                 </form>
 
                 <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-                  Already have an account?{" "}
+                  Don't have an account?{" "}
                   <button
-                    onClick={onSwitchToLogin}
+                    onClick={onSwitchToSignup}
                     className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                   >
-                    Log in
+                    Sign up
                   </button>
                 </p>
               </CardContent>
