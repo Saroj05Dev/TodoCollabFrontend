@@ -4,23 +4,43 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../redux/slices/authSlice";
+import { notyf } from "../../helpers/notifier";
 
 export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
+  const dispatch = useDispatch();
+  const { error, loading } = useSelector((state) => state.auth);
   const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login data:", form);
-    // 👉 Call API here
-    onClose();
+
+    try {
+      const response = await dispatch(login(form));
+      console.log("Login response:", response);
+
+      if (response.type === "auth/login/fulfilled") {
+        notyf.success("Login successful!");
+        onClose();
+      } else {
+        notyf.error("Login failed!");
+      }
+    } catch (err) {
+      console.error(err);
+      notyf.error("Something went wrong while logging in.");
+    }
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
@@ -30,6 +50,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
             onClick={onClose}
           />
 
+          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -38,6 +59,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             <Card className="w-full max-w-md shadow-xl border border-gray-200 dark:border-gray-700 rounded-2xl relative">
+              {/* Close button */}
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -51,12 +73,16 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
                 </h1>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Email */}
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                       Email Address
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <Mail
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={18}
+                      />
                       <Input
                         type="email"
                         name="email"
@@ -69,12 +95,16 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
                     </div>
                   </div>
 
+                  {/* Password */}
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                       Password
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <Lock
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={18}
+                      />
                       <Input
                         type="password"
                         name="password"
@@ -87,13 +117,17 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full rounded-xl text-base">
-                    Log In
+                  <Button
+                    type="submit"
+                    className="w-full rounded-xl text-base"
+                    disabled={loading}
+                  >
+                    {loading ? "Logging in..." : "Log In"}
                   </Button>
                 </form>
 
                 <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <button
                     onClick={onSwitchToSignup}
                     className="text-blue-600 dark:text-blue-400 hover:underline font-medium"

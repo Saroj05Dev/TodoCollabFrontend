@@ -4,17 +4,33 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../../redux/slices/authSlice";
+import { notyf } from "../../helpers/notifier";
 
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const dispatch = useDispatch();
+  const { error, loading } = useSelector((state) => state.auth);
+  const [form, setForm] = useState({ fullName: "", email: "", password: "" });
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Signup data:", form);
-    // 👉 Call API here
-    onClose();
+    try {
+      const response = await dispatch(signup(form));
+      console.log(response);
+      if (response.type === "auth/signup/fulfilled") {
+        notyf.success("Signup successful!");
+        onClose();
+      } else {
+        notyf.error("Signup failed!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -56,12 +72,15 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                       Full Name
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <User
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={18}
+                      />
                       <Input
                         type="text"
-                        name="name"
+                        name="fullName"
                         placeholder="John Doe"
-                        value={form.name}
+                        value={form.fullName}
                         onChange={handleChange}
                         className="pl-10"
                         required
@@ -74,7 +93,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                       Email Address
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <Mail
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={18}
+                      />
                       <Input
                         type="email"
                         name="email"
@@ -92,7 +114,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                       Password
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <Lock
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={18}
+                      />
                       <Input
                         type="password"
                         name="password"
