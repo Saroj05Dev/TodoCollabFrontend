@@ -6,7 +6,6 @@ export const fetchTaskCount = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axiosInstance.get("/tasks/count");
-      console.log("res fron taskSlice", response.data);
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
