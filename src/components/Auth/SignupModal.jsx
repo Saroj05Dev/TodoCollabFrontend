@@ -10,7 +10,6 @@ import { notyf } from "../../helpers/notifier";
 
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const dispatch = useDispatch();
-  const { error, loading } = useSelector((state) => state.auth);
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
 
   const handleChange = (e) =>
