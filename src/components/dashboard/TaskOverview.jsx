@@ -1,9 +1,15 @@
 import React from 'react';
 import { Activity, RefreshCw } from 'lucide-react';
 
-const TaskOverview = ({ totalTasks, inProgress, completedCount, isLoading }) => {
-  const inProgressCount = inProgress?.length || 0;
-
+const TaskOverview = ({ 
+  totalTasks, 
+  inProgress, 
+  inProgressCount, 
+  done,            // ✅ accept completed tasks array
+  doneCount, 
+  completedCount, 
+  isLoading 
+}) => {
   return (
     <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -43,18 +49,21 @@ const TaskOverview = ({ totalTasks, inProgress, completedCount, isLoading }) => 
                 <p className="text-sm text-gray-600 dark:text-gray-300">In Progress</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-500 dark:text-green-400">{completedCount}</p>
+                <p className="text-2xl font-bold text-green-500 dark:text-green-400">{doneCount}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">Completed</p>
               </div>
             </div>
 
-            {/* Recent Tasks */}
+            {/* Recent In-Progress Tasks */}
             {inProgressCount > 0 && (
               <div className="pt-4">
-                <h4 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">Recent Tasks</h4>
+                <h4 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">Recent In-Progress Tasks</h4>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {inProgress.slice(0, 3).map((task, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div
+                      key={task._id || idx}
+                      className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                    >
                       <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0" />
                       <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
                         {task.title || task.name || `Task ${idx + 1}`}
@@ -64,6 +73,31 @@ const TaskOverview = ({ totalTasks, inProgress, completedCount, isLoading }) => 
                   {inProgressCount > 3 && (
                     <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                       +{inProgressCount - 3} more tasks
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Recent Completed Tasks */}
+            {doneCount > 0 && (
+              <div className="pt-4">
+                <h4 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">Recent Completed Tasks</h4>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {done.slice(0, 3).map((task, idx) => (
+                    <div
+                      key={task._id || idx}
+                      className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                    >
+                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
+                      <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
+                        {task.title || task.name || `Task ${idx + 1}`}
+                      </span>
+                    </div>
+                  ))}
+                  {doneCount > 3 && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                      +{doneCount - 3} more tasks
                     </p>
                   )}
                 </div>

@@ -45,6 +45,8 @@ const initialState = {
   inProgress: [],
   done: [],
   taskCount: 0,
+  inProgressCount: 0,
+  doneCount: 0,
   loading: false,
   error: null,
 };
@@ -77,6 +79,7 @@ const taskSlice = createSlice({
       .addCase(fetchInProgressTask.fulfilled, (state, action) => {
         state.loading = false;
         state.inProgress = action.payload;
+        state.inProgressCount = action.payload.length;
       })
       .addCase(fetchInProgressTask.rejected, (state, action) => {
         state.loading = false;
@@ -90,6 +93,7 @@ const taskSlice = createSlice({
       .addCase(fetchDoneTasks.fulfilled, (state, action) => {
         state.loading = false;
         state.done = action.payload;
+        state.doneCount = action.payload.length;
       })
       .addCase(fetchDoneTasks.rejected, (state, action) => {
         state.loading = false;
