@@ -10,7 +10,7 @@ import { fetchUserCount } from "../redux/slices/usersSlice";
 import StatsGrid from "../components/dashboard/StatsGrid";
 import TaskOverview from "../components/dashboard/TaskOverview";
 import QuickActions from "../components/dashboard/QuickActions";
-import KanbanPlaceholder from "../components/dashboard/KanbanPlaceholder";
+import KanbanBoard from "../components/Kanban/KanbanBoard";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -114,7 +114,7 @@ const Dashboard = () => {
         <QuickActions teamMembers={userCount} />
       </div>
 
-      <KanbanPlaceholder totalTasks={taskCount} />
+      <KanbanBoard totalTasks={taskCount} />
     </div>
   );
 };
