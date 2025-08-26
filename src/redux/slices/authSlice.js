@@ -20,12 +20,20 @@ export const login = createAsyncThunk("auth/login", async (credentials, thunkAPI
     }
 });
 
+export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
+    try {
+        const response = await axiosInstance.get("/users/me");
+        return response.data.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response.data);
+    }
+});
+
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || null,
-  token: localStorage.getItem("token") || null,
   loading: false,
   error: null,
-  isLoggedIn: !!localStorage.getItem("token")
+  isLoggedIn: !!localStorage.getItem("user")
 };
 
 const authSlice = createSlice({
@@ -70,15 +78,20 @@ const authSlice = createSlice({
         .addCase(login.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.userData;
-            state.token = action.payload.token;
             state.isLoggedIn = true;
             localStorage.setItem("user", JSON.stringify(state.user));
-            localStorage.setItem("token", state.token);
         })
         .addCase(login.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || "Login Failed!";
-        });
+        })
+        // get current user
+        .addCase(getUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload;
+            state.isLoggedIn = true;
+            localStorage.setItem("user", JSON.stringify(state.user));
+        })
     }
 });
 

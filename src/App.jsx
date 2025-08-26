@@ -1,10 +1,19 @@
+import { useDispatch } from "react-redux";
 import Layout from "./components/layout/Layout";
 import { ThemeProvider } from "./context/ThemeContext";
 import ActivityLog from "./pages/ActivityLog";
 import Dashboard from "./pages/Dashboard";
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { getUser } from "./redux/slices/authSlice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
+  
   return (
     <ThemeProvider>
       <Layout>
