@@ -4,7 +4,6 @@ import axiosInstance from "../../helpers/axiosInstance";
 import KanbanColumn from "./KanbanColumn";
 
 const KanbanBoard = () => {
-  // Must match schema exactly
   const STATUSES = ["Todo", "In Progress", "Done"];
 
   const [tasks, setTasks] = useState(

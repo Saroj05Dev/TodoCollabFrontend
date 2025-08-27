@@ -10,7 +10,8 @@ import {
   Trash2, 
   Play, 
   Pause,
-  AlertCircle
+  AlertCircle,
+  ChartColumn
 } from 'lucide-react';
 import axiosInstance from '../helpers/axiosInstance';
 
@@ -144,7 +145,7 @@ const ActivityLog = () => {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Activity Log</h1>
-            <span className="text-2xl">📊</span>
+            <span className="text-2xl dark:text-white"><ChartColumn className="h-5 w-5" /></span>
           </div>
           <p className="text-gray-600 dark:text-gray-300">Track all recent task activities and team collaboration</p>
         </div>
