@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
@@ -6,12 +6,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
-import { notyf } from "../../helpers/notifier";
-
+import Toast from "../Tasks/Toast"
 export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const dispatch = useDispatch();
-  const { error, loading } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
   const [form, setForm] = useState({ email: "", password: "" });
+    const [toast, setToast] = useState({ show: false, type: '', message: '' });
+
+  // Toast functionality
+    const showToast = useCallback((type, message) => {
+      setToast({ show: true, type, message });
+      setTimeout(() => setToast({ show: false, type: '', message: '' }), 3000);
+    }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,14 +31,16 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
       console.log("Login response:", response);
 
       if (response.type === "auth/login/fulfilled") {
-        notyf.success("Login successful!");
-        onClose();
+        showToast('success', 'Login successful!');
+        setTimeout(() => {
+          onClose();    
+        }, 1000);
       } else {
-        notyf.error("Login failed!");
+        showToast('error', 'Login failed!');
       }
     } catch (err) {
       console.error(err);
-      notyf.error("Something went wrong while logging in.");
+      showToast('error', err.message || 'Login failed!');
     }
   };
 
@@ -40,6 +48,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
     <AnimatePresence>
       {isOpen && (
         <>
+          <Toast toast={toast} />
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}

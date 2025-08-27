@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, X } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { signup } from "../../redux/slices/authSlice";
-import { notyf } from "../../helpers/notifier";
+import Toast from "../Tasks/Toast";
 
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const dispatch = useDispatch();
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+  const [toast, setToast] = useState({ show: false, type: '', message: '' });
+  
+  
+    // Toast functionality
+      const showToast = useCallback((type, message) => {
+        setToast({ show: true, type, message });
+        setTimeout(() => setToast({ show: false, type: '', message: '' }), 3000);
+      }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,10 +30,12 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
       const response = await dispatch(signup(form));
       console.log(response);
       if (response.type === "auth/signup/fulfilled") {
-        notyf.success("Signup successful!");
-        onClose();
+        showToast('success', 'Signup successful!');
+        setTimeout(() => {
+          onClose();
+        })
       } else {
-        notyf.error("Signup failed!");
+        showToast('error', 'Signup failed!');
       }
     } catch (error) {
       console.log(error);
@@ -36,6 +46,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
     <AnimatePresence>
       {isOpen && (
         <>
+          <Toast toast={toast}/>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
