@@ -1,5 +1,6 @@
 // TaskPage/index.js - Main component file
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { ArrowLeft, Loader, AlertTriangle } from 'lucide-react';
 import TaskHeader from '../components/Tasks/TaskHeader';
 import TaskDetailsCard from '../components/Tasks/TaskDetailsCard';
@@ -7,9 +8,14 @@ import RecentActivityCard from '../components/Tasks/RecentActivityCard';
 import ConflictModal from '../components/Tasks/ConflictModal';
 import Toast from '../components/Tasks/Toast';
 import { useTaskLogic } from '../components/Tasks/useTaskLogic';
-import { mockRecentActivities } from '../components/Tasks/mockData';
+import { useParams } from 'react-router-dom';
+// Remove mock data import - we'll fetch real data
+// import { mockRecentActivities } from './data/mockData';
 
-const TaskPage = ({ taskId = '1', onNavigate = () => {}, onEdit = () => {} }) => {
+const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
+  const dispatch = useDispatch();
+  const { taskId } = useParams();
+  
   const {
     task,
     loading,
@@ -26,14 +32,32 @@ const TaskPage = ({ taskId = '1', onNavigate = () => {}, onEdit = () => {} }) =>
     handleRefresh
   } = useTaskLogic(taskId);
 
-  // Use mock data for recent activities
-  const [recentActivities] = useState(mockRecentActivities);
+  // State for recent activities - you can create a separate thunk for this later
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(false);
 
   useEffect(() => {
     if (taskId) {
       fetchTask();
+      // fetchRecentActivities(); // You can implement this later
     }
   }, [taskId, fetchTask]);
+
+  // TODO: Implement this function when you have the activities API endpoint
+  const fetchRecentActivities = async () => {
+    setActivitiesLoading(true);
+    try {
+      // For now, we'll use empty array. Later you can add:
+      // const response = await axiosInstance.get(`/tasks/${taskId}/activities`);
+      // setRecentActivities(response.data.data);
+      setRecentActivities([]); // Empty for now
+    } catch (error) {
+      console.error('Failed to fetch activities:', error);
+      setRecentActivities([]);
+    } finally {
+      setActivitiesLoading(false);
+    }
+  };
 
   if (loading) {
     return (

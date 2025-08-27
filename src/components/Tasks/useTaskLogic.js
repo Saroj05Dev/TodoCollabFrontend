@@ -1,11 +1,20 @@
 // TaskPage/hooks/useTaskLogic.js - Custom hook for task logic
 import { useState, useCallback } from 'react';
-import { mockTaskData } from './mockData';
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+  fetchTaskById, 
+  smartAssignTask, 
+  resolveConflict 
+} from '../../redux/slices/taskSlice';
 
 export const useTaskLogic = (taskId) => {
-  const [task, setTask] = useState(mockTaskData);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+
+  const dispatch = useDispatch();
+  
+  // Get task data from Redux store
+  const { selectedTask, loading: reduxLoading, error: reduxError } = useSelector(state => state.task);
+  
+  // Local state for component-specific loading states
   const [smartAssignLoading, setSmartAssignLoading] = useState(false);
   const [conflictData, setConflictData] = useState(null);
   const [showConflictModal, setShowConflictModal] = useState(false);
@@ -19,57 +28,43 @@ export const useTaskLogic = (taskId) => {
   }, []);
 
   const fetchTask = useCallback(async () => {
-    setLoading(true);
-    setError(null);
     try {
-      // Mock API call - replace with actual Redux dispatch
-      // await dispatch(fetchTaskById(taskId)).unwrap();
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await dispatch(fetchTaskById(taskId)).unwrap();
       showToast('success', 'Task loaded successfully');
     } catch (err) {
-      setError({ message: 'Failed to load task' });
-      showToast('error', 'Failed to load task');
-    } finally {
-      setLoading(false);
+      console.error('Failed to fetch task:', err);
+      showToast('error', err.message || 'Failed to load task');
     }
-  }, [taskId, showToast]);
+  }, [dispatch, taskId, showToast]);
 
   const handleSmartAssign = useCallback(async () => {
+    if (!selectedTask) {
+      showToast('error', 'No task selected');
+      return;
+    }
+
     setSmartAssignLoading(true);
     try {
-      // Mock API call - replace with actual Redux dispatch
-      // await dispatch(smartAssignTask({ taskId, taskData: {} })).unwrap();
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock successful assignment
-      setTask(prev => ({
-        ...prev,
-        assignedUser: { 
-          _id: '3', 
-          name: 'Alex Brown', 
-          fullName: 'Alex Brown', 
-          email: 'alex@example.com' 
-        },
-        lastModified: new Date()
-      }));
+      const result = await dispatch(smartAssignTask({ 
+        taskId, 
+        taskData: selectedTask 
+      })).unwrap();
       
       showToast('success', 'Task smartly assigned successfully!');
     } catch (error) {
-      if (error.status === 409) {
-        // Mock conflict data
+      console.error('Smart assign error:', error);
+      
+      if (error.status === 409 || error.message?.includes('conflict')) {
+        // Handle conflict - you might need to adjust this based on your API response structure
         setConflictData({
-          yourVersion: task,
-          serverVersion: {
-            ...task,
+          yourVersion: selectedTask,
+          serverVersion: error.conflictingVersion || {
+            ...selectedTask,
             assignedUser: { 
-              _id: '4', 
-              name: 'Emily Davis', 
-              fullName: 'Emily Davis', 
-              email: 'emily@example.com' 
+              _id: 'server_user', 
+              name: 'Server Assigned User', 
+              fullName: 'Server Assigned User', 
+              email: 'server@example.com' 
             },
             lastModified: new Date()
           }
@@ -77,43 +72,45 @@ export const useTaskLogic = (taskId) => {
         setShowConflictModal(true);
         showToast('error', 'Conflict detected! Please resolve before proceeding.');
       } else {
-        showToast('error', 'Failed to assign task');
+        showToast('error', error.message || 'Failed to assign task');
       }
     } finally {
       setSmartAssignLoading(false);
     }
-  }, [task, showToast]);
+  }, [dispatch, taskId, selectedTask, showToast]);
 
   const handleResolveConflict = useCallback(async (useServerVersion = false) => {
+    if (!conflictData) {
+      showToast('error', 'No conflict data available');
+      return;
+    }
+
     setResolveLoading(true);
     try {
-      // Mock API call - replace with actual Redux dispatch
-      // await dispatch(resolveConflict(taskId)).unwrap();
+      await dispatch(resolveConflict(taskId)).unwrap();
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const resolvedTask = useServerVersion ? conflictData.serverVersion : conflictData.yourVersion;
-      setTask(resolvedTask);
+      // After resolving conflict, fetch the updated task
+      await dispatch(fetchTaskById(taskId)).unwrap();
       
       setShowConflictModal(false);
       setConflictData(null);
       showToast('success', 'Conflict resolved successfully!');
     } catch (error) {
-      showToast('error', 'Failed to resolve conflict');
+      console.error('Resolve conflict error:', error);
+      showToast('error', error.message || 'Failed to resolve conflict');
     } finally {
       setResolveLoading(false);
     }
-  }, [conflictData, showToast]);
+  }, [dispatch, taskId, conflictData, showToast]);
 
   const handleRefresh = useCallback(() => {
     fetchTask();
   }, [fetchTask]);
 
   return {
-    task,
-    loading,
-    error,
+    task: selectedTask,
+    loading: reduxLoading,
+    error: reduxError,
     smartAssignLoading,
     conflictData,
     showConflictModal,
@@ -123,6 +120,6 @@ export const useTaskLogic = (taskId) => {
     fetchTask,
     handleSmartAssign,
     handleResolveConflict,
-    handleRefresh
+    handleRefresh: fetchTask // Refresh is just fetching the task again
   };
 };

@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { getUser } from "./redux/slices/authSlice";
 import TaskPage from "./pages/TaskPage";
+import TaskListPage from "./pages/TaskListPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,7 +22,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/recent-activities" element={<ActivityLog />} />
-          <Route path="/tasks" element={<TaskPage />} />
+          <Route path="/tasks" element={<TaskListPage />} />
+          <Route path="/tasks/:taskId" element={<TaskPage />} />
         </Routes>
       </Layout>
     </ThemeProvider>
