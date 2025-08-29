@@ -15,7 +15,7 @@ const RecentActivityCard = ({ activities, onNavigate }) => {
             </span>
           </div>
           <button
-            onClick={() => onNavigate('/activity')}
+            onClick={() => onNavigate('/recent-activities')}
             className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
           >
             View all →

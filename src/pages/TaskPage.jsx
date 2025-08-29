@@ -6,11 +6,15 @@ import RecentActivityCard from '../components/Tasks/RecentActivityCard';
 import ConflictModal from '../components/Tasks/ConflictModal';
 import Toast from '../components/Tasks/Toast';
 import { useTaskLogic } from '../components/Tasks/useTaskLogic';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import EditTaskModal from '../components/Tasks/EditTaskModal';
+import { updateTask } from '../redux/slices/taskSlice';
+import { useDispatch } from 'react-redux';
 
 const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
   const { taskId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   
   const {
     task,
@@ -47,13 +51,17 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
     setEditOpen(true);
   }
 
-  const handleSave = (updatedTask) => {
-    // Call your update api here
-    console.log("saving task:", updatedTask)
-
-    // after api success
-    setEditOpen(false);
-    fetchTask(); // refresh task detials
+  const handleSave = async(updatedTask) => {
+    try { 
+      await dispatch(updateTask({ taskId, taskData: updatedTask })).unwrap();
+      console.log("saving task:", updatedTask)
+  
+      setEditOpen(false);
+      fetchTask(); // refresh task detials
+    } catch (error) {
+      console.log(error)
+      console.error('Failed to update task:', error);
+    }
   }
 
   const fetchRecentActivities = async () => {
@@ -108,7 +116,7 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
     <div className="space-y-6 max-w-4xl mx-auto">
       <Toast toast={toast} />
       
-      <TaskHeader onNavigate={onNavigate} />
+      <TaskHeader onNavigate={navigate} />
       
       <TaskDetailsCard
         task={task}
@@ -121,7 +129,7 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
       
       <RecentActivityCard
         activities={recentActivities}
-        onNavigate={onNavigate}
+        onNavigate={navigate}
       />
       
       {showConflictModal && (
