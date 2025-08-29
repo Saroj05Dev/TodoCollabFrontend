@@ -1,4 +1,3 @@
-// TaskPage/components/TaskDetailsCard.jsx - Main task details card
 import React from 'react';
 import { Edit3, Flag, Tag, Loader, Zap, RefreshCw } from 'lucide-react';
 import TaskInfoGrid from './TaskInfoGrid';
@@ -6,7 +5,7 @@ import { getPriorityColor, getStatusColor } from './utils/colorUtils';
 
 const TaskDetailsCard = ({ 
   task, 
-  onEdit, 
+  onEdit,
   smartAssignLoading, 
   loading, 
   onSmartAssign, 
@@ -38,8 +37,9 @@ const TaskDetailsCard = ({
               </span>
             </div>
             
+            {/* ✅ Edit button now navigates to EditTaskPage */}
             <button
-              onClick={() => onEdit(task)}
+              onClick={() => onEdit(task)}  // still calls parent handler
               className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-sm font-medium"
             >
               <Edit3 className="h-4 w-4" />

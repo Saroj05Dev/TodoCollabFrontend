@@ -1,4 +1,3 @@
-// TaskPage/components/ConflictModal.jsx - Conflict resolution modal
 import React from 'react';
 import { AlertTriangle, User, GitMerge, CheckCircle, Loader, X } from 'lucide-react';
 

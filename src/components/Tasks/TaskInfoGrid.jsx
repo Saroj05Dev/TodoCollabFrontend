@@ -1,4 +1,3 @@
-// TaskPage/components/TaskInfoGrid.jsx - Grid component for task information
 import React from 'react';
 import { User, Calendar, Clock } from 'lucide-react';
 import { formatTimeAgo } from './utils/dataUtils';

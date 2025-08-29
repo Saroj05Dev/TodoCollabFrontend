@@ -1,6 +1,4 @@
-// TaskPage/index.js - Main component file
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { ArrowLeft, Loader, AlertTriangle } from 'lucide-react';
 import TaskHeader from '../components/Tasks/TaskHeader';
 import TaskDetailsCard from '../components/Tasks/TaskDetailsCard';
@@ -9,11 +7,9 @@ import ConflictModal from '../components/Tasks/ConflictModal';
 import Toast from '../components/Tasks/Toast';
 import { useTaskLogic } from '../components/Tasks/useTaskLogic';
 import { useParams } from 'react-router-dom';
-// Remove mock data import - we'll fetch real data
-// import { mockRecentActivities } from './data/mockData';
+import EditTaskModal from '../components/Tasks/EditTaskModal';
 
 const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
-  const dispatch = useDispatch();
   const { taskId } = useParams();
   
   const {
@@ -32,9 +28,12 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
     handleRefresh
   } = useTaskLogic(taskId);
 
-  // State for recent activities - you can create a separate thunk for this later
   const [recentActivities, setRecentActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
+
+  // states for edit modal
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
     if (taskId) {
@@ -43,7 +42,20 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
     }
   }, [taskId, fetchTask]);
 
-  // TODO: Implement this function when you have the activities API endpoint
+  const handleEdit = () => {
+    setSelectedTask(task);
+    setEditOpen(true);
+  }
+
+  const handleSave = (updatedTask) => {
+    // Call your update api here
+    console.log("saving task:", updatedTask)
+
+    // after api success
+    setEditOpen(false);
+    fetchTask(); // refresh task detials
+  }
+
   const fetchRecentActivities = async () => {
     setActivitiesLoading(true);
     try {
@@ -100,7 +112,7 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
       
       <TaskDetailsCard
         task={task}
-        onEdit={onEdit}
+        onEdit={handleEdit}
         smartAssignLoading={smartAssignLoading}
         loading={loading}
         onSmartAssign={handleSmartAssign}
@@ -120,6 +132,13 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
           onClose={() => setShowConflictModal(false)}
         />
       )}
+
+      <EditTaskModal 
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
+        task={selectedTask}
+        onSave={handleSave}
+      />
     </div>
   );
 };

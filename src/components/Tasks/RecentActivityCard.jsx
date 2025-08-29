@@ -1,4 +1,3 @@
-// TaskPage/components/RecentActivityCard.jsx - Recent activity card component
 import React from 'react';
 import { Activity, User } from 'lucide-react';
 import { formatTimeAgo } from './utils/dataUtils';

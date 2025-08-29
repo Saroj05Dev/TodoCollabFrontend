@@ -1,4 +1,3 @@
-// TaskPage/components/Toast.jsx - Toast notification component
 import React from 'react';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 
