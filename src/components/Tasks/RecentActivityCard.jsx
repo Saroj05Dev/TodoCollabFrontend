@@ -1,4 +1,3 @@
-import React from 'react';
 import { Activity, User } from 'lucide-react';
 import { formatTimeAgo } from './utils/dataUtils';
 
@@ -38,13 +37,13 @@ const RecentActivityCard = ({ activities, onNavigate }) => {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    <span className="font-semibold">{activity.user.name}</span>
+                    <span className="font-semibold">{activity.user.fullName}</span>
                     <span className="ml-1 font-normal text-gray-600 dark:text-gray-400">
-                      {activity.action} this task
+                      {activity.actionType} this task
                     </span>
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {formatTimeAgo(activity.timestamp)}
+                    {formatTimeAgo(activity.createdAt)}
                   </p>
                 </div>
               </div>

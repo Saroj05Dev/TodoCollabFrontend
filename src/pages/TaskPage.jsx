@@ -10,8 +10,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import EditTaskModal from '../components/Tasks/EditTaskModal';
 import { updateTask } from '../redux/slices/taskSlice';
 import { useDispatch } from 'react-redux';
+import axiosInstance from '../helpers/axiosInstance';
 
-const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
+const TaskPage = ({ onNavigate = () => {}}) => {
   const { taskId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
   useEffect(() => {
     if (taskId) {
       fetchTask();
-      // fetchRecentActivities(); // You can implement this later
+      fetchRecentActivities();
     }
   }, [taskId, fetchTask]);
 
@@ -67,10 +68,10 @@ const TaskPage = ({ onNavigate = () => {}, onEdit = () => {} }) => {
   const fetchRecentActivities = async () => {
     setActivitiesLoading(true);
     try {
-      // For now, we'll use empty array. Later you can add:
-      // const response = await axiosInstance.get(`/tasks/${taskId}/activities`);
-      // setRecentActivities(response.data.data);
-      setRecentActivities([]); // Empty for now
+      const res = await axiosInstance.get("/actions");
+      const allActivities = res.data.data || [];
+      // Show only first five in the card initially
+      setRecentActivities(allActivities.slice(0, 5));
     } catch (error) {
       console.error('Failed to fetch activities:', error);
       setRecentActivities([]);
