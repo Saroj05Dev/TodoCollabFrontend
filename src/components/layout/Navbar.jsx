@@ -14,6 +14,7 @@ import {
 import { useTheme } from "../../context/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
+import { Link } from "react-router-dom";
 
 export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
   const { isDark, toggleTheme } = useTheme();
@@ -42,7 +43,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
               <Menu className={`h-5 w-5 ${iconColor}`} />
             )}
           </button>
-
           <h1 className="text-xl font-bold hidden sm:block text-gray-900 dark:text-white">
             TodoCollabBoard
           </h1>

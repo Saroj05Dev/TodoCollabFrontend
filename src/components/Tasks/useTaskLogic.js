@@ -47,7 +47,7 @@ export const useTaskLogic = (taskId) => {
     try {
       const result = await dispatch(smartAssignTask({ 
         taskId, 
-        taskData: selectedTask 
+        // taskData: selectedTask 
       })).unwrap();
       
       showToast('success', 'Task smartly assigned successfully!');

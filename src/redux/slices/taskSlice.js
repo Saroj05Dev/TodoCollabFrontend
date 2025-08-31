@@ -87,11 +87,10 @@ export const updateTask = createAsyncThunk(
 
 export const smartAssignTask = createAsyncThunk(
   "task/smartAssignTask",
-  async ({ taskData, taskId }, thunkAPI) => {
+  async ({ taskId }, thunkAPI) => {
     try {
-      const response = await axiosInstance.post(
+      const response = await axiosInstance.put(
         `/tasks/${taskId}/smart-assign`,
-        taskData
       );
       return response.data.data;
     } catch (error) {

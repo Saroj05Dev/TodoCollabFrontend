@@ -1,4 +1,3 @@
-import React from 'react';
 import { Edit3, Flag, Tag, Loader, Zap, RefreshCw } from 'lucide-react';
 import TaskInfoGrid from './TaskInfoGrid';
 import { getPriorityColor, getStatusColor } from './utils/colorUtils';
