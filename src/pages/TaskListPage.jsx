@@ -1,8 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Loader, AlertTriangle, ClipboardList, Tag, Flag } from "lucide-react";
-import { fetchTasks } from "../redux/slices/taskSlice";
+import {
+  Loader,
+  AlertTriangle,
+  ClipboardList,
+  Plus,
+  Tag,
+  Flag,
+} from "lucide-react";
+import { createTask, fetchTasks } from "../redux/slices/taskSlice";
+import CreateTaskModal from "../components/Tasks/CreateTaskModal";
+import axiosInstance from "../helpers/axiosInstance";
 
 const TaskListPage = () => {
   const dispatch = useDispatch();
@@ -10,9 +19,26 @@ const TaskListPage = () => {
 
   const { all: tasks, loading, error } = useSelector((state) => state.task);
 
+  // state for modal
+  const [createOpen, setCreateOpen] = useState(false);
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosInstance.get("/users");
+        setUsers(response.data.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [])
 
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
@@ -38,11 +64,24 @@ const TaskListPage = () => {
     }
   };
 
+  // handle create task API call
+  const handleCreate = async (newTask) => {
+    try {
+      const createdTask = await dispatch(createTask(newTask)).unwrap();
+      setCreateOpen(false);
+      navigate(`/tasks/${createdTask._id}`);
+    } catch (error) {
+      console.error("Error creating task:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader className="h-8 w-8 animate-spin text-blue-600" />
-        <span className="ml-2 text-gray-600 dark:text-gray-300">Loading tasks...</span>
+        <span className="ml-2 text-gray-600 dark:text-gray-300">
+          Loading tasks...
+        </span>
       </div>
     );
   }
@@ -51,7 +90,9 @@ const TaskListPage = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <AlertTriangle className="h-10 w-10 text-red-500 mb-2" />
-        <p className="text-red-600 dark:text-red-400">{error.message || error}</p>
+        <p className="text-red-600 dark:text-red-400">
+          {error.message || error}
+        </p>
       </div>
     );
   }
@@ -59,9 +100,19 @@ const TaskListPage = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 p-6">
       {/* Page Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <ClipboardList className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">All Tasks</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <ClipboardList className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            All Tasks
+          </h1>
+        </div>
+        <button
+          onClick={() => setCreateOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm"
+        >
+          <Plus className="h-4 w-4" /> New Task
+        </button>
       </div>
 
       {tasks.length === 0 ? (
@@ -80,7 +131,9 @@ const TaskListPage = () => {
                 {task.title}
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                {task.description ? task.description.slice(0, 80) + "..." : "No description"}
+                {task.description
+                  ? task.description.slice(0, 80) + "..."
+                  : "No description"}
               </p>
               <div className="flex gap-2">
                 <span
@@ -104,6 +157,14 @@ const TaskListPage = () => {
           ))}
         </div>
       )}
+
+      {/* Create Task Modal */}
+      <CreateTaskModal
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreate={handleCreate}
+        users={users}
+      />
     </div>
   );
 };

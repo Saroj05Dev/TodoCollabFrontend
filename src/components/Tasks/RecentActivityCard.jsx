@@ -31,7 +31,7 @@ const RecentActivityCard = ({ activities, onNavigate }) => {
         ) : (
           <div className="space-y-4">
             {activities.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-4 py-3 px-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div key={activity._id} className="flex items-center gap-4 py-3 px-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                   <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
@@ -39,7 +39,7 @@ const RecentActivityCard = ({ activities, onNavigate }) => {
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
                     <span className="font-semibold">{activity.user.fullName}</span>
                     <span className="ml-1 font-normal text-gray-600 dark:text-gray-400">
-                      {activity.actionType} this task
+                      {activity.actionType} a task
                     </span>
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
