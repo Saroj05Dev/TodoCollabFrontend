@@ -24,11 +24,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login data:", form);
 
     try {
       const response = await dispatch(login(form));
-      console.log("Login response:", response);
 
       if (response.type === "auth/login/fulfilled") {
         showToast('success', 'Login successful!');

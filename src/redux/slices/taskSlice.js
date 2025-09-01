@@ -65,7 +65,7 @@ export const deleteTask = createAsyncThunk(
   "task/deleteTask",
   async (taskId, thunkAPI) => {
     try {
-      const response = await axiosInstance.delete(`/tasks/${taskId}`);
+      await axiosInstance.delete(`/tasks/${taskId}`);
       return taskId; // return id so we can filter it from state
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -80,6 +80,14 @@ export const updateTask = createAsyncThunk(
       const response = await axiosInstance.put(`/tasks/${taskId}`, taskData);
       return response.data.data;
     } catch (error) {
+      if(error.response?.status === 409) {
+        // Conflict detected
+        return thunkAPI.rejectWithValue({
+          type: "conflict",
+          serverVersion: error.response?.data?.data,
+          clientVersion: taskData
+        });
+      }
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -101,10 +109,11 @@ export const smartAssignTask = createAsyncThunk(
 
 export const resolveConflict = createAsyncThunk(
   "task/resolveConflict",
-  async (taskId, thunkAPI) => {
+  async ({ taskId, resolutionType, task }, thunkAPI) => {
     try {
       const response = await axiosInstance.post(
         `/tasks/${taskId}/resolve-conflict`
+        , { resolutionType, task }
       );
       return response.data.data;
     } catch (error) {

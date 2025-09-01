@@ -23,6 +23,7 @@ const TaskPage = ({ onNavigate = () => {}}) => {
     error,
     smartAssignLoading,
     conflictData,
+    setConflictData,
     showConflictModal,
     setShowConflictModal,
     resolveLoading,
@@ -55,14 +56,22 @@ const TaskPage = ({ onNavigate = () => {}}) => {
   const handleSave = async(updatedTask) => {
     try { 
       await dispatch(updateTask({ taskId, taskData: updatedTask })).unwrap();
-      console.log("saving task:", updatedTask)
-  
+      // Success -> Close modal
       setEditOpen(false);
       fetchTask(); // refresh task detials
     } catch (error) {
-      console.log(error)
-      console.error('Failed to update task:', error);
+      console.log("update error", error);
+      // If it's a conflict → open modal
+    if (error?.type === "conflict") {
+      setConflictData({
+        yourVersion: error.clientVersion,
+        serverVersion: error.serverVersion
+      });
+      setShowConflictModal(true);
+    } else {
+      console.error("Failed to update task:", error);
     }
+  }
   }
 
   const fetchRecentActivities = async () => {

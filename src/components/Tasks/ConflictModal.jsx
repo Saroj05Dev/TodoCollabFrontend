@@ -35,7 +35,7 @@ const ConflictModal = ({ conflictData, resolveLoading, onResolveConflict, onClos
                 <div>
                   <span className="font-medium text-gray-700 dark:text-gray-300">Assigned to:</span>
                   <span className="ml-2 text-gray-900 dark:text-white">
-                    {conflictData.yourVersion.assignedUser?.name || 'Unassigned'}
+                    {conflictData.yourVersion.assignedUser?.fullName || 'Unassigned'}
                   </span>
                 </div>
                 <div>
@@ -59,7 +59,7 @@ const ConflictModal = ({ conflictData, resolveLoading, onResolveConflict, onClos
                 <div>
                   <span className="font-medium text-gray-700 dark:text-gray-300">Assigned to:</span>
                   <span className="ml-2 text-gray-900 dark:text-white">
-                    {conflictData.serverVersion.assignedUser?.name || 'Unassigned'}
+                    {conflictData.serverVersion.assignedUser?.fullName || 'Unassigned'}
                   </span>
                 </div>
                 <div>

@@ -25,10 +25,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup data:", form);
     try {
       const response = await dispatch(signup(form));
-      console.log(response);
       if (response.type === "auth/signup/fulfilled") {
         showToast('success', 'Signup successful!');
         setTimeout(() => {
