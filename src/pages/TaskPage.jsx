@@ -148,6 +148,11 @@ const TaskPage = ({ onNavigate = () => {}}) => {
           resolveLoading={resolveLoading}
           onResolveConflict={handleResolveConflict}
           onClose={() => setShowConflictModal(false)}
+          onOpenChange={(open) => {
+            if (open) {
+              setEditOpen(false) // Close edit modal if conflict modal is opened
+            }
+          }}
         />
       )}
 

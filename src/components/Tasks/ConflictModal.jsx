@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AlertTriangle, User, GitMerge, CheckCircle, Loader, X } from 'lucide-react';
 
-const ConflictModal = ({ conflictData, resolveLoading, onResolveConflict, onClose }) => {
+const ConflictModal = ({ conflictData, resolveLoading, onResolveConflict, onClose, onOpenChange }) => {
+
+  useEffect(() => {
+    if (onOpenChange) {
+      onOpenChange(true); // tell the parent to open
+    }
+
+    return () => {
+      if (onOpenChange) {
+        onOpenChange(false); // tell the parent to close
+      }
+    }
+  }, [onOpenChange]);
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">

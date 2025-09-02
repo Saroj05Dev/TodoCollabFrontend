@@ -99,8 +99,8 @@ export const useTaskLogic = (taskId) => {
         await dispatch(
           resolveConflict({
             taskId,
-            resolutionType: useServerVersion ? "overwrite" : "merge",
-            task: useServerVersion ? conflictData.server : conflictData.client,
+            resolutionType: "overwrite",
+            task: useServerVersion ? conflictData.serverVersion : conflictData.yourVersion,
           })
         ).unwrap();
 
