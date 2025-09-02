@@ -9,7 +9,7 @@ import {
   Tag,
   Flag,
 } from "lucide-react";
-import { createTask, fetchTasks } from "../redux/slices/taskSlice";
+import { createTask, deleteTask, fetchTasks } from "../redux/slices/taskSlice";
 import CreateTaskModal from "../components/Tasks/CreateTaskModal";
 import axiosInstance from "../helpers/axiosInstance";
 
@@ -38,7 +38,7 @@ const TaskListPage = () => {
     };
 
     fetchUsers();
-  }, [])
+  }, []);
 
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
@@ -72,6 +72,17 @@ const TaskListPage = () => {
       navigate(`/tasks/${createdTask._id}`);
     } catch (error) {
       console.error("Error creating task:", error);
+    }
+  };
+
+  // handle delete task API call
+  const handleDelete = async (taskId) => {
+    try {
+      await dispatch(deleteTask(taskId)).unwrap();
+      // refresh task list
+      dispatch(fetchTasks());
+    } catch (error) {
+      console.error("Error deleting task:", error);
     }
   };
 
@@ -124,34 +135,60 @@ const TaskListPage = () => {
           {tasks.map((task) => (
             <div
               key={task._id}
-              onClick={() => navigate(`/tasks/${task._id}`)}
-              className="cursor-pointer p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+              className="relative p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-800 transition"
             >
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                {task.title}
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                {task.description
-                  ? task.description.slice(0, 80) + "..."
-                  : "No description"}
-              </p>
-              <div className="flex gap-2">
-                <span
-                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(
-                    task.priority
-                  )}`}
+              {/* Delete button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // don’t trigger navigate
+                  handleDelete(task._id);
+                }}
+                className="absolute top-3 right-3 text-red-500 hover:text-red-700 dark:hover:text-red-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <Flag className="h-3 w-3" />
-                  {task.priority}
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                    task.status
-                  )}`}
-                >
-                  <Tag className="h-3 w-3" />
-                  {task.status}
-                </span>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14"
+                  />
+                </svg>
+              </button>
+
+              {/* Card Content */}
+              <div onClick={() => navigate(`/tasks/${task._id}`)}>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  {task.title}
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  {task.description
+                    ? task.description.slice(0, 80) + "..."
+                    : "No description"}
+                </p>
+                <div className="flex gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(
+                      task.priority
+                    )}`}
+                  >
+                    <Flag className="h-3 w-3" />
+                    {task.priority}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                      task.status
+                    )}`}
+                  >
+                    <Tag className="h-3 w-3" />
+                    {task.status}
+                  </span>
+                </div>
               </div>
             </div>
           ))}

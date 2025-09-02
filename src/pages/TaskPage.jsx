@@ -112,7 +112,7 @@ const TaskPage = ({ onNavigate = () => {}}) => {
             {error?.message || 'The requested task could not be found.'}
           </p>
           <button
-            onClick={() => onNavigate('/tasks')}
+            onClick={() => navigate('/tasks')}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           >
             Back to Tasks
