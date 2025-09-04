@@ -13,8 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/slices/authSlice";
-import { Link } from "react-router-dom";
+import { logoutUser } from "../../redux/slices/authSlice";
 
 export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
   const { isDark, toggleTheme } = useTheme();
@@ -74,7 +73,7 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
               {/* Dropdown menu */}
               <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <button
-                  onClick={() => dispatch(logout())}
+                  onClick={() => dispatch(logoutUser())}
                   className="flex items-center gap-2 w-full px-4 py-2 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
                 >
                   <LogOut className="w-4 h-4" />

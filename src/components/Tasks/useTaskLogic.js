@@ -9,6 +9,9 @@ import axiosInstance from "../../helpers/axiosInstance";
 
 export const useTaskLogic = (taskId) => {
   const dispatch = useDispatch();
+  // get the userId from the Redux store
+  const authState = useSelector((state) => state.auth);
+  const userId = authState.user ? authState.user.id : null;
 
   // Get task data from Redux store
   const {
@@ -17,7 +20,7 @@ export const useTaskLogic = (taskId) => {
     error: reduxError,
   } = useSelector((state) => state.task);
 
-  // Local state for component-specific loading states
+  // Local state for component-specific states
   const [smartAssignLoading, setSmartAssignLoading] = useState(false);
   const [conflictData, setConflictData] = useState(null);
   const [showConflictModal, setShowConflictModal] = useState(false);
@@ -27,6 +30,13 @@ export const useTaskLogic = (taskId) => {
   const [attachmentLoading, setAttachmentLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  
+  // New state for comments
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [addingComment, setAddingComment] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
 
   // Toast functionality
   const showToast = useCallback((type, message) => {
@@ -95,6 +105,52 @@ export const useTaskLogic = (taskId) => {
     }
   }, [taskId, fetchAttachments, showToast]);
 
+  // New function to fetch comments
+  const fetchComments = useCallback(async () => {
+    setCommentsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/comments/task/${taskId}`);
+      setComments(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      showToast("error", "Failed to fetch comments");
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [taskId, showToast]);
+
+  // New function to add a comment
+  const handleAddComment = useCallback(async () => {
+    if (!newComment.trim()) return;
+    setAddingComment(true);
+    try {
+      await axiosInstance.post(`/comments/${taskId}`, { comment: newComment });
+      setNewComment("");
+      showToast("success", "Comment added successfully!");
+      fetchComments(); // Refresh comments list
+    } catch (error) {
+      console.error("Add comment error:", error);
+      showToast("error", "Failed to add comment.");
+    } finally {
+      setAddingComment(false);
+    }
+  }, [taskId, newComment, showToast, fetchComments]);
+
+  // New function to delete a comment
+  const handleDeleteComment = useCallback(async (commentId) => {
+    setDeletingCommentId(commentId);
+    try {
+      await axiosInstance.delete(`/comments/${commentId}`);
+      showToast("success", "Comment deleted successfully!");
+      fetchComments(); // Refresh comments list
+    } catch (error) {
+      console.error("Delete comment error:", error);
+      showToast("error", "Failed to delete comment.");
+    } finally {
+      setDeletingCommentId(null);
+    }
+  }, [showToast, fetchComments]);
+
   const handleSmartAssign = useCallback(async () => {
     if (!selectedTask) {
       showToast("error", "No task selected");
@@ -106,7 +162,6 @@ export const useTaskLogic = (taskId) => {
        await dispatch(
         smartAssignTask({
           taskId,
-          // taskData: selectedTask
         })
       ).unwrap();
 
@@ -177,7 +232,8 @@ export const useTaskLogic = (taskId) => {
 
   const handleRefresh = useCallback(() => {
     fetchTask();
-  }, [fetchTask]);
+    fetchComments();
+  }, [fetchTask, fetchComments]);
 
   return {
     task: selectedTask,
@@ -193,13 +249,22 @@ export const useTaskLogic = (taskId) => {
     fetchTask,
     handleSmartAssign,
     handleResolveConflict,
-    handleRefresh: fetchTask,
+    handleRefresh,
     attachments,
     attachmentLoading,
     uploading,
     deletingId,
     fetchAttachments,
     handleAddAttachments,
-    handleDeleteAttachment
+    handleDeleteAttachment,
+    comments,
+    commentsLoading,
+    newComment,
+    setNewComment,
+    addingComment,
+    deletingCommentId,
+    userId,
+    handleAddComment,
+    handleDeleteComment,
   };
 };

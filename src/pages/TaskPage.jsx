@@ -11,8 +11,9 @@ import EditTaskModal from "../components/Tasks/EditTaskModal";
 import { updateTask } from "../redux/slices/taskSlice";
 import { useDispatch } from "react-redux";
 import axiosInstance from "../helpers/axiosInstance";
+import CommentSection from "../components/Tasks/CommentSection";
 
-const TaskPage = ({ onNavigate = () => {} }) => {
+const TaskPage = () => {
   const { taskId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,7 +29,6 @@ const TaskPage = ({ onNavigate = () => {} }) => {
     setShowConflictModal,
     resolveLoading,
     toast,
-    fetchTask,
     handleSmartAssign,
     handleResolveConflict,
     handleRefresh,
@@ -38,7 +38,16 @@ const TaskPage = ({ onNavigate = () => {} }) => {
     deletingId,
     handleAddAttachments,
     handleDeleteAttachment,
-    fetchAttachments
+    fetchAttachments,
+    comments,
+    commentsLoading,
+    newComment,
+    setNewComment,
+    addingComment,
+    deletingCommentId,
+    userId,
+    handleAddComment,
+    handleDeleteComment,
   } = useTaskLogic(taskId);
 
   const [recentActivities, setRecentActivities] = useState([]);
@@ -50,18 +59,11 @@ const TaskPage = ({ onNavigate = () => {} }) => {
 
   useEffect(() => {
     if (taskId) {
-      fetchTask();
+      handleRefresh(); // <-- This will now call both fetchTask and fetchComments
       fetchRecentActivities();
+      fetchAttachments();
     }
-  }, [taskId, fetchTask]);
-
-  useEffect(() => {
-  if (taskId) {
-    fetchTask();
-    fetchRecentActivities();
-    fetchAttachments();
-  }
-}, [taskId, fetchTask, fetchAttachments]);
+  }, [taskId, handleRefresh, fetchAttachments]);
 
 
   const handleEdit = () => {
@@ -74,7 +76,7 @@ const TaskPage = ({ onNavigate = () => {} }) => {
       await dispatch(updateTask({ taskId, taskData: updatedTask })).unwrap();
       // Success -> Close modal
       setEditOpen(false);
-      fetchTask(); // refresh task detials
+      handleRefresh(); // refresh task details
     } catch (error) {
       console.log("update error", error);
       // If it's a conflict → open modal
@@ -159,6 +161,21 @@ const TaskPage = ({ onNavigate = () => {} }) => {
         handleAddAttachment={handleAddAttachments}
         handleDeleteAttachment={handleDeleteAttachment}
         attachmentLoading={attachmentLoading}
+      />
+
+      {/* New Comments Section Component */}
+      <CommentSection
+        comments={comments}
+        commentsLoading={commentsLoading}
+        newComment={newComment}
+        setNewComment={setNewComment}
+        addingComment={addingComment}
+        deletingCommentId={deletingCommentId}
+        userId={userId}
+        taskCreatorId={task.createdBy?._id}
+        taskAssigneeId={task.assignedUser?._id}
+        handleAddComment={handleAddComment}
+        handleDeleteComment={handleDeleteComment}
       />
 
       <RecentActivityCard activities={recentActivities} onNavigate={navigate} />
