@@ -26,7 +26,8 @@ const getActionText = (type) => {
     case "started": return "started work on";
     case "paused": return "paused";
     case "deleted": return "deleted";
-    default: return "performed action on";
+    case "commented": return "commented on";
+    default: return type ? type.toLowerCase() : "performed action on";
   }
 };
 
