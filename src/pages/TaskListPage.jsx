@@ -135,7 +135,7 @@ const TaskListPage = () => {
           {tasks.map((task) => (
             <div
               key={task._id}
-              className="relative p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+              className="relative p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer"
             >
               {/* Delete button */}
               <button

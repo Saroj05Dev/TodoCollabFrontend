@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Loader, AlertTriangle } from 'lucide-react';
-import TaskHeader from '../components/Tasks/TaskHeader';
-import TaskDetailsCard from '../components/Tasks/TaskDetailsCard';
-import RecentActivityCard from '../components/Tasks/RecentActivityCard';
-import ConflictModal from '../components/Tasks/ConflictModal';
-import Toast from '../components/Tasks/Toast';
-import { useTaskLogic } from '../components/Tasks/useTaskLogic';
-import { useNavigate, useParams } from 'react-router-dom';
-import EditTaskModal from '../components/Tasks/EditTaskModal';
-import { updateTask } from '../redux/slices/taskSlice';
-import { useDispatch } from 'react-redux';
-import axiosInstance from '../helpers/axiosInstance';
+import React, { useState, useEffect } from "react";
+import { ArrowLeft, Loader, AlertTriangle } from "lucide-react";
+import TaskHeader from "../components/Tasks/TaskHeader";
+import TaskDetailsCard from "../components/Tasks/TaskDetailsCard";
+import RecentActivityCard from "../components/Tasks/RecentActivityCard";
+import ConflictModal from "../components/Tasks/ConflictModal";
+import Toast from "../components/Tasks/Toast";
+import { useTaskLogic } from "../components/Tasks/useTaskLogic";
+import { useNavigate, useParams } from "react-router-dom";
+import EditTaskModal from "../components/Tasks/EditTaskModal";
+import { updateTask } from "../redux/slices/taskSlice";
+import { useDispatch } from "react-redux";
+import axiosInstance from "../helpers/axiosInstance";
 
-const TaskPage = ({ onNavigate = () => {}}) => {
+const TaskPage = ({ onNavigate = () => {} }) => {
   const { taskId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const {
     task,
     loading,
@@ -31,7 +31,14 @@ const TaskPage = ({ onNavigate = () => {}}) => {
     fetchTask,
     handleSmartAssign,
     handleResolveConflict,
-    handleRefresh
+    handleRefresh,
+    attachments,
+    attachmentLoading,
+    uploading,
+    deletingId,
+    handleAddAttachments,
+    handleDeleteAttachment,
+    fetchAttachments
   } = useTaskLogic(taskId);
 
   const [recentActivities, setRecentActivities] = useState([]);
@@ -48,13 +55,22 @@ const TaskPage = ({ onNavigate = () => {}}) => {
     }
   }, [taskId, fetchTask]);
 
+  useEffect(() => {
+  if (taskId) {
+    fetchTask();
+    fetchRecentActivities();
+    fetchAttachments();
+  }
+}, [taskId, fetchTask, fetchAttachments]);
+
+
   const handleEdit = () => {
     setSelectedTask(task);
     setEditOpen(true);
-  }
+  };
 
-  const handleSave = async(updatedTask) => {
-    try { 
+  const handleSave = async (updatedTask) => {
+    try {
       await dispatch(updateTask({ taskId, taskData: updatedTask })).unwrap();
       // Success -> Close modal
       setEditOpen(false);
@@ -62,17 +78,17 @@ const TaskPage = ({ onNavigate = () => {}}) => {
     } catch (error) {
       console.log("update error", error);
       // If it's a conflict → open modal
-    if (error?.type === "conflict") {
-      setConflictData({
-        yourVersion: error.clientVersion,
-        serverVersion: error.serverVersion
-      });
-      setShowConflictModal(true);
-    } else {
-      console.error("Failed to update task:", error);
+      if (error?.type === "conflict") {
+        setConflictData({
+          yourVersion: error.clientVersion,
+          serverVersion: error.serverVersion,
+        });
+        setShowConflictModal(true);
+      } else {
+        console.error("Failed to update task:", error);
+      }
     }
-  }
-  }
+  };
 
   const fetchRecentActivities = async () => {
     setActivitiesLoading(true);
@@ -82,7 +98,7 @@ const TaskPage = ({ onNavigate = () => {}}) => {
       // Show only first five in the card initially
       setRecentActivities(allActivities.slice(0, 5));
     } catch (error) {
-      console.error('Failed to fetch activities:', error);
+      console.error("Failed to fetch activities:", error);
       setRecentActivities([]);
     } finally {
       setActivitiesLoading(false);
@@ -94,7 +110,9 @@ const TaskPage = ({ onNavigate = () => {}}) => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex items-center gap-3">
           <Loader className="h-8 w-8 animate-spin text-blue-600" />
-          <span className="text-lg text-gray-600 dark:text-gray-300">Loading task...</span>
+          <span className="text-lg text-gray-600 dark:text-gray-300">
+            Loading task...
+          </span>
         </div>
       </div>
     );
@@ -106,13 +124,13 @@ const TaskPage = ({ onNavigate = () => {}}) => {
         <div className="text-center">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            {error ? 'Error Loading Task' : 'Task Not Found'}
+            {error ? "Error Loading Task" : "Task Not Found"}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {error?.message || 'The requested task could not be found.'}
+            {error?.message || "The requested task could not be found."}
           </p>
           <button
-            onClick={() => navigate('/tasks')}
+            onClick={() => navigate("/tasks")}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           >
             Back to Tasks
@@ -125,23 +143,26 @@ const TaskPage = ({ onNavigate = () => {}}) => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <Toast toast={toast} />
-      
+
       <TaskHeader onNavigate={navigate} />
-      
+
       <TaskDetailsCard
         task={task}
         onEdit={handleEdit}
         smartAssignLoading={smartAssignLoading}
+        uploading={uploading}
+        deletingId={deletingId}
         loading={loading}
         onSmartAssign={handleSmartAssign}
         onRefresh={handleRefresh}
+        attachments={attachments}
+        handleAddAttachment={handleAddAttachments}
+        handleDeleteAttachment={handleDeleteAttachment}
+        attachmentLoading={attachmentLoading}
       />
-      
-      <RecentActivityCard
-        activities={recentActivities}
-        onNavigate={navigate}
-      />
-      
+
+      <RecentActivityCard activities={recentActivities} onNavigate={navigate} />
+
       {showConflictModal && (
         <ConflictModal
           conflictData={conflictData}
@@ -150,13 +171,13 @@ const TaskPage = ({ onNavigate = () => {}}) => {
           onClose={() => setShowConflictModal(false)}
           onOpenChange={(open) => {
             if (open) {
-              setEditOpen(false) // Close edit modal if conflict modal is opened
+              setEditOpen(false); // Close edit modal if conflict modal is opened
             }
           }}
         />
       )}
 
-      <EditTaskModal 
+      <EditTaskModal
         isOpen={editOpen}
         onClose={() => setEditOpen(false)}
         task={selectedTask}

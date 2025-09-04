@@ -1,4 +1,3 @@
-// TaskPage/hooks/useTaskLogic.js - Custom hook for task logic
 import { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,6 +5,7 @@ import {
   smartAssignTask,
   resolveConflict,
 } from "../../redux/slices/taskSlice";
+import axiosInstance from "../../helpers/axiosInstance";
 
 export const useTaskLogic = (taskId) => {
   const dispatch = useDispatch();
@@ -23,6 +23,10 @@ export const useTaskLogic = (taskId) => {
   const [showConflictModal, setShowConflictModal] = useState(false);
   const [resolveLoading, setResolveLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, type: "", message: "" });
+  const [attachments, setAttachments] = useState([]);
+  const [attachmentLoading, setAttachmentLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   // Toast functionality
   const showToast = useCallback((type, message) => {
@@ -40,6 +44,57 @@ export const useTaskLogic = (taskId) => {
     }
   }, [dispatch, taskId, showToast]);
 
+  // Fetch attachments
+  const fetchAttachments = useCallback(async () => {
+    setAttachmentLoading(true);
+    try {
+      const response = await axiosInstance.get(`/attachments/${taskId}`);
+      setAttachments(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching attachments:", error);
+      showToast("error", "Failed to fetch attachments");
+    } finally {
+      setAttachmentLoading(false);
+    }
+  }, [taskId, showToast]);
+
+  // handle add attachments
+  const handleAddAttachments = useCallback(async (file) => {
+    if(!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      setUploading(true);
+      await axiosInstance.post(`/attachments/${taskId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      showToast("success", "Attachments added successfully!");
+      fetchAttachments();
+    } catch (error) {
+      console.error("Add attachment error:", error);
+      showToast("error", "Failed to add attachments");
+    } finally {
+      setUploading(false);
+    }
+  }, [taskId, showToast, fetchAttachments]);
+
+  // handle delete attachments
+  const handleDeleteAttachment = useCallback(async (publicId) => {
+    try {
+      setDeletingId(publicId);
+      await axiosInstance.delete(`/attachments/${taskId}?publicId=${publicId}`);
+      showToast("success", "Attachment deleted!");
+      fetchAttachments();
+    } catch (err) {
+      console.error("Delete attachment error:", err);
+      showToast("error", "Failed to delete attachment");
+    } finally {
+      setDeletingId(null);
+    }
+  }, [taskId, fetchAttachments, showToast]);
+
   const handleSmartAssign = useCallback(async () => {
     if (!selectedTask) {
       showToast("error", "No task selected");
@@ -48,7 +103,7 @@ export const useTaskLogic = (taskId) => {
 
     setSmartAssignLoading(true);
     try {
-      const result = await dispatch(
+       await dispatch(
         smartAssignTask({
           taskId,
           // taskData: selectedTask
@@ -138,6 +193,13 @@ export const useTaskLogic = (taskId) => {
     fetchTask,
     handleSmartAssign,
     handleResolveConflict,
-    handleRefresh: fetchTask, // Refresh is just fetching the task again
+    handleRefresh: fetchTask,
+    attachments,
+    attachmentLoading,
+    uploading,
+    deletingId,
+    fetchAttachments,
+    handleAddAttachments,
+    handleDeleteAttachment
   };
 };

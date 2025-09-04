@@ -1,81 +1,147 @@
-import { Edit3, Flag, Tag, Loader, Zap, RefreshCw } from 'lucide-react';
-import TaskInfoGrid from './TaskInfoGrid';
-import { getPriorityColor, getStatusColor } from './utils/colorUtils';
+import React from "react";
+import { Loader, Upload, X, Paperclip } from "lucide-react";
+import TaskInfoGrid from "./TaskInfoGrid";
 
-const TaskDetailsCard = ({ 
-  task, 
+const TaskDetailsCard = ({
+  task,
   onEdit,
-  smartAssignLoading, 
-  loading, 
-  onSmartAssign, 
-  onRefresh 
+  smartAssignLoading,
+  attachmentLoading,
+  uploading,
+  deletingId,
+  onSmartAssign,
+  onRefresh,
+  attachments,
+  handleAddAttachment,
+  handleDeleteAttachment,
 }) => {
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleAddAttachment(e.target.files[0]);
+    }
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-      {/* Card Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/10 dark:to-indigo-900/10">
-        <div className="flex justify-between items-start">
-          <div className="flex-1 pr-4">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {task.title}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              {task.description || 'No description available'}
-            </p>
-          </div>
-          
-          <div className="flex flex-col gap-2 ml-4">
-            <div className="flex gap-2">
-              <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getPriorityColor(task.priority)}`}>
-                <Flag className="h-3 w-3" />
-                {task.priority || 'Medium'}
-              </span>
-              <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(task.status)}`}>
-                <Tag className="h-3 w-3" />
-                {task.status || 'Todo'}
-              </span>
-            </div>
-            
-            {/* ✅ Edit button now navigates to EditTaskPage */}
-            <button
-              onClick={() => onEdit(task)}  // still calls parent handler
-              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-sm font-medium"
-            >
-              <Edit3 className="h-4 w-4" />
-              Edit
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Card Body */}
-      <div className="p-6">
-        <TaskInfoGrid task={task} />
-
-        {/* Action Buttons */}
-        <div className="flex gap-4 mb-6">
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          {task.title}
+        </h2>
+        <div className="flex gap-2">
+          <button
+            onClick={onEdit}
+            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+          >
+            Edit
+          </button>
           <button
             onClick={onSmartAssign}
             disabled={smartAssignLoading}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors font-medium shadow-sm"
+            className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm flex items-center gap-1"
           >
             {smartAssignLoading ? (
-              <Loader className="h-4 w-4 animate-spin" />
+              <>
+                <Loader className="h-4 w-4 animate-spin" />
+                Processing...
+              </>
             ) : (
-              <Zap className="h-4 w-4" />
+              "Smart Assign"
             )}
-            {smartAssignLoading ? 'Assigning...' : 'Smart Assign'}
           </button>
-          
           <button
             onClick={onRefresh}
-            disabled={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white rounded-lg transition-colors font-medium shadow-sm"
+            className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
         </div>
+      </div>
+
+      {/* Task Info Grid */}
+      <TaskInfoGrid task={task} />
+
+      {/* Description */}
+      <div>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          Description
+        </h3>
+        <p className="text-gray-700 dark:text-gray-300">
+          {task.description || "No description provided."}
+        </p>
+      </div>
+
+      {/* Attachments Section */}
+      <div>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          Attachments
+        </h3>
+
+        {/* Upload Button */}
+        <label className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg text-sm w-fit
+          ${uploading ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}
+        `}>
+          {uploading ? (
+            <>
+              <Loader className="h-4 w-4 animate-spin" />
+              <span>Uploading...</span>
+            </>
+          ) : (
+            <>
+              <Upload className="h-4 w-4" />
+              <span>Upload File</span>
+            </>
+          )}
+          <input
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+            disabled={attachmentLoading}
+          />
+        </label>
+
+        {/* List of attachments */}
+        {attachments?.length > 0 ? (
+          <ul className="mt-3 space-y-2">
+            {attachments.map((att) => (
+              <li
+                key={att.publicId}
+                className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded-md"
+              >
+                <div className="flex items-center gap-2">
+                  <Paperclip className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                  <a
+                    href={att.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
+                  >
+                    {att.filename}
+                  </a>
+                </div>
+                <button
+                  onClick={() => handleDeleteAttachment(att.publicId)}
+                  disabled={deletingId === att.publicId}
+                  className={`p-1 rounded-full ${
+                    deletingId === att.publicId
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-red-100 dark:hover:bg-red-900"
+                  }`}
+                >
+                  {deletingId === att.publicId ? (
+                    <Loader className="h-4 w-4 animate-spin text-red-500" />
+                  ) : (
+                    <X className="h-4 w-4 text-red-500" />
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            No attachments uploaded.
+          </p>
+        )}
       </div>
     </div>
   );
