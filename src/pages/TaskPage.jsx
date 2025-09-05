@@ -12,6 +12,7 @@ import { updateTask } from "../redux/slices/taskSlice";
 import { useDispatch } from "react-redux";
 import axiosInstance from "../helpers/axiosInstance";
 import CommentSection from "../components/Tasks/CommentSection";
+import SubtasksSection from "../components/Tasks/SubtasksSection";
 
 const TaskPage = () => {
   const { taskId } = useParams();
@@ -48,6 +49,14 @@ const TaskPage = () => {
     userId,
     handleAddComment,
     handleDeleteComment,
+    subtasks,
+    subtasksLoading,
+    addingSubtask,
+    deletingSubtaskId,
+    updatingSubtaskId,
+    handleAddSubtask,
+    handleUpdateSubtaskStatus,
+    handleDeleteSubtask,
   } = useTaskLogic(taskId);
 
   const [recentActivities, setRecentActivities] = useState([]);
@@ -59,7 +68,7 @@ const TaskPage = () => {
 
   useEffect(() => {
     if (taskId) {
-      handleRefresh(); // <-- This will now call both fetchTask and fetchComments
+      handleRefresh();
       fetchRecentActivities();
       fetchAttachments();
     }
@@ -161,6 +170,20 @@ const TaskPage = () => {
         handleAddAttachment={handleAddAttachments}
         handleDeleteAttachment={handleDeleteAttachment}
         attachmentLoading={attachmentLoading}
+      />
+
+      <SubtasksSection
+        subtasks={subtasks}
+        subtasksLoading={subtasksLoading}
+        taskCreatorId={task.createdBy?._id || task.createdBy}
+        taskAssigneeId={task.assignedUser?._id || task.assignedUser}
+        userId={userId}
+        handleAddSubtask={handleAddSubtask}
+        handleUpdateSubtaskStatus={handleUpdateSubtaskStatus}
+        handleDeleteSubtask={handleDeleteSubtask}
+        addingSubtask={addingSubtask}
+        deletingSubtaskId={deletingSubtaskId}
+        updatingSubtaskId={updatingSubtaskId}
       />
 
       {/* New Comments Section Component */}

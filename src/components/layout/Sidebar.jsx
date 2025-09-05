@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   CheckSquare,
-  ListTodo,
   Activity,
   Settings,
   X,
@@ -20,7 +19,6 @@ const Sidebar = ({ isOpen, onClose }) => {
       href: "/",
     },
     { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
-    { id: "subtasks", label: "Subtasks", icon: ListTodo, href: "/subtasks" },
     {
       id: "activity",
       label: "Activity Log",

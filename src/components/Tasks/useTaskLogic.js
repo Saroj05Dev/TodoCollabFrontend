@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchTaskById,
@@ -6,6 +6,7 @@ import {
   resolveConflict,
 } from "../../redux/slices/taskSlice";
 import axiosInstance from "../../helpers/axiosInstance";
+import { createSubtask, deleteSubtask, fetchSubtasks, updateSubtask } from "../../redux/slices/subtasksSlice";
 
 export const useTaskLogic = (taskId) => {
   const dispatch = useDispatch();
@@ -31,12 +32,18 @@ export const useTaskLogic = (taskId) => {
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   
-  // New state for comments
+  // state for comments
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [addingComment, setAddingComment] = useState(false);
   const [deletingCommentId, setDeletingCommentId] = useState(null);
+
+  // state for subtasks
+  const { subtasks, loading: subtasksLoadingState } = useSelector((state) => state.subtasks);
+  const [addingSubtask, setAddingSubtask] = useState(false);
+  const [deletingSubtaskId, setDeletingSubtaskId] = useState(null);
+  const [updatingSubtaskId, setUpdatingSubtaskId] = useState(null);
 
   // Toast functionality
   const showToast = useCallback((type, message) => {
@@ -151,6 +158,49 @@ export const useTaskLogic = (taskId) => {
     }
   }, [showToast, fetchComments]);
 
+  // handleAddSubtasks
+  const handleAddSubtask = useCallback(async (title) => {
+    try {
+      setAddingSubtask(true);
+      await dispatch(createSubtask({ taskId, subtaskData: { title } })).unwrap();
+      showToast("success", "Subtask added successfully!");
+      dispatch(fetchSubtasks(taskId));
+    } catch (error) {
+      console.error("Add subtask error:", error);
+      showToast("error", error.message || "Failed to add subtask.");
+    } finally {
+      setAddingSubtask(false);
+    }
+  }, [dispatch, taskId, showToast]);
+
+  // handleUpdateSubtasks
+  const handleUpdateSubtaskStatus = useCallback(async (subtaskId, status) => {
+    try {
+      setUpdatingSubtaskId(subtaskId);
+      await dispatch(updateSubtask({ subtaskId, subtaskData: { status } })).unwrap();
+      showToast("success", "Subtask updated successfully!");
+    } catch (error) {
+      console.error("Update subtask error:", error);
+      showToast("error", error.message || "Failed to update subtask.");
+    } finally {
+      setUpdatingSubtaskId(null);
+    }
+  }, [dispatch, showToast]);
+
+  // handleDeleteSubtasks
+  const handleDeleteSubtask = useCallback(async (subtaskId) => {
+    try {
+      setDeletingSubtaskId(subtaskId);
+      await dispatch(deleteSubtask(subtaskId)).unwrap();
+      showToast("success", "Subtask deleted successfully!");
+    } catch (error) {
+      console.error("Delete subtask error:", error);
+      showToast("error", error.message || "Failed to delete subtask.");
+    } finally {
+      setDeletingSubtaskId(null);
+    }
+  }, [dispatch, showToast]);
+
   const handleSmartAssign = useCallback(async () => {
     if (!selectedTask) {
       showToast("error", "No task selected");
@@ -233,11 +283,18 @@ export const useTaskLogic = (taskId) => {
   const handleRefresh = useCallback(() => {
     fetchTask();
     fetchComments();
-  }, [fetchTask, fetchComments]);
+    dispatch(fetchSubtasks(taskId));
+  }, [fetchTask, fetchComments, dispatch, taskId]);
+
+  useEffect(() => {
+    if(taskId) {
+      handleRefresh();
+    }
+  }, [taskId, handleRefresh]);
 
   return {
     task: selectedTask,
-    loading: reduxLoading,
+    loading: reduxLoading || subtasksLoadingState === "pending",
     error: reduxError,
     smartAssignLoading,
     conflictData,
@@ -266,5 +323,13 @@ export const useTaskLogic = (taskId) => {
     userId,
     handleAddComment,
     handleDeleteComment,
+    subtasks,
+    subtasksLoading: subtasksLoadingState === 'pending',
+    addingSubtask,
+    deletingSubtaskId,
+    updatingSubtaskId,
+    handleAddSubtask,
+    handleUpdateSubtaskStatus,
+    handleDeleteSubtask, 
   };
 };
