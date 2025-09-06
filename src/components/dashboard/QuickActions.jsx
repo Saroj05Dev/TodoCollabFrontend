@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CheckSquare, Users, TrendingUp } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,13 +10,20 @@ import {
 
 const QuickActions = () => {
   const dispatch = useDispatch();
-  const quickActions = useSelector((state) => state.quickActions); // ✅ fixed
+  const quickActions = useSelector((state) => state.quickActions);
   const { currentTeamId, members, loading, error, successMessage } =
     quickActions || {};
 
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
+
+  useEffect(() => {
+    const storedTeamId = localStorage.getItem("currentTeamId");
+    if(storedTeamId) {
+      dispatch(fetchTeamById(storedTeamId));
+    }
+  }, [dispatch]);
 
   const handleCreateTeam = async () => {
     if (!teamName) return;

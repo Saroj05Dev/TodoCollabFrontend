@@ -86,7 +86,9 @@ const quickActionsSlice = createSlice({
       .addCase(createTeam.fulfilled, (state, action) => {
         state.loading = false;
         state.team = action.payload;
+        console.log("create team payload", action.payload);
         state.currentTeamId = action.payload._id;
+        localStorage.setItem("currentTeamId", action.payload._id);
         state.successMessage = "Team created successfully!";
       })
       .addCase(createTeam.rejected, (state, action) => {
@@ -101,6 +103,7 @@ const quickActionsSlice = createSlice({
       .addCase(inviteMember.fulfilled, (state, action) => {
         state.loading = false;
         state.team = action.payload;
+        console.log("action.payload", action.payload);
         state.members = action.payload.members;
         state.successMessage = "Member invited successfully!";
       })
@@ -133,6 +136,7 @@ const quickActionsSlice = createSlice({
         state.team = action.payload;
         state.members = action.payload.members;
         state.currentTeamId = action.payload._id;
+        localStorage.setItem("currentTeamId", action.payload._id);
       })
       .addCase(fetchTeamById.rejected, (state, action) => {
         state.loading = false;

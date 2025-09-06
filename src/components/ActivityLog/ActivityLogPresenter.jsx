@@ -1,33 +1,57 @@
 import React from "react";
 import {
-  RefreshCw, Activity, User, Clock, AlertCircle, ChartColumn,
-  Plus, Edit3, CheckSquare, Play, Pause, Trash2
+  RefreshCw,
+  Activity,
+  User,
+  Clock,
+  AlertCircle,
+  ChartColumn,
+  Plus,
+  Edit3,
+  CheckSquare,
+  Play,
+  Pause,
+  Trash2,
 } from "lucide-react";
 
-// helpers moved here for UI
 const getActionIcon = (type) => {
   const base = "h-4 w-4";
   switch (type?.toLowerCase()) {
-    case "created": return <Plus className={`${base} text-green-500`} />;
-    case "updated": return <Edit3 className={`${base} text-blue-500`} />;
-    case "completed": return <CheckSquare className={`${base} text-purple-500`} />;
-    case "started": return <Play className={`${base} text-orange-500`} />;
-    case "paused": return <Pause className={`${base} text-yellow-500`} />;
-    case "deleted": return <Trash2 className={`${base} text-red-500`} />;
-    default: return <Activity className={`${base} text-gray-500`} />;
+    case "created":
+      return <Plus className={`${base} text-green-500`} />;
+    case "updated":
+      return <Edit3 className={`${base} text-blue-500`} />;
+    case "completed":
+      return <CheckSquare className={`${base} text-purple-500`} />;
+    case "started":
+      return <Play className={`${base} text-orange-500`} />;
+    case "paused":
+      return <Pause className={`${base} text-yellow-500`} />;
+    case "deleted":
+      return <Trash2 className={`${base} text-red-500`} />;
+    default:
+      return <Activity className={`${base} text-gray-500`} />;
   }
 };
 
 const getActionText = (type) => {
   switch (type?.toLowerCase()) {
-    case "created": return "created";
-    case "updated": return "updated";
-    case "completed": return "completed";
-    case "started": return "started work on";
-    case "paused": return "paused";
-    case "deleted": return "deleted";
-    case "commented": return "commented on";
-    default: return type ? type.toLowerCase() : "performed action on";
+    case "created":
+      return "created";
+    case "updated":
+      return "updated";
+    case "completed":
+      return "completed";
+    case "started":
+      return "started work on";
+    case "paused":
+      return "paused";
+    case "deleted":
+      return "deleted";
+    case "commented":
+      return "commented on";
+    default:
+      return type ? type.toLowerCase() : "performed action on";
   }
 };
 
@@ -81,7 +105,9 @@ export default function ActivityLogPresenter({
           disabled={refreshing}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium"
         >
-          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+          />
           Refresh
         </button>
       </div>
@@ -125,19 +151,45 @@ export default function ActivityLogPresenter({
             </div>
           ) : (
             activities.map((a) => (
-              <div key={a._id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+              <div
+                key={a._id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+              >
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full border flex items-center justify-center">
                     {getActionIcon(a.actionType)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-900 dark:text-white">
-                      <span className="font-medium">{a.user?.fullName || "Unknown"}</span>{" "}
+                      <span className="font-medium">
+                        {a.user?.fullName || "Unknown"}
+                      </span>{" "}
                       {getActionText(a.actionType)}{" "}
-                      <span className="font-medium text-blue-600 dark:text-blue-400">
-                        "{a.task?.title || "Unknown Task"}"
-                      </span>
+                      {a.task?.title ? (
+                        <span className="font-medium text-blue-600 dark:text-blue-400">
+                          "{a.task.title}"
+                        </span>
+                      ) : a.metadata?.teamName ? (
+                        <span className="font-medium text-purple-600 dark:text-purple-400">
+                          Team "{a.metadata.teamName}"
+                        </span>
+                      ) : a.metadata?.invitedEmail ? (
+                        <span className="font-medium text-green-600 dark:text-green-400">
+                          "{a.metadata.invitedEmail}"
+                        </span>
+                      ) : a.metadata?.subtaskTitle ? (
+                        <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                          Subtask "{a.metadata.subtaskTitle}"
+                        </span>
+                        ) : a.metadata?.commentText ? (
+                        <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                          Subtask "{a.metadata.commentText}"
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">Unknown</span>
+                      )}
                     </p>
+
                     <div className="mt-1 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-1">
                         <User className="h-3 w-3" />

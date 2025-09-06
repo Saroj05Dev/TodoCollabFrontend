@@ -1,7 +1,11 @@
 import React from 'react';
 import { CheckSquare, Clock, ListTodo, Users } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
-const StatsGrid = ({ taskCount, inProgress, done, userCount, taskLoading, userLoading }) => {
+const StatsGrid = ({ taskCount, inProgress, done, taskLoading }) => {
+
+  const { members, loading: memberLoading } = useSelector((state) => state.quickActions);
+ 
   const stats = [
     {
       title: 'Total Tasks',
@@ -32,12 +36,12 @@ const StatsGrid = ({ taskCount, inProgress, done, userCount, taskLoading, userLo
     },
     {
       title: 'Team Members',
-      value: userCount || 0,
-      change: userCount > 1 ? `${userCount} team members` : userCount === 1 ? '1 team member' : 'No team members',
+      value: members?.length || 0,
+      change: members?.length > 1 ? `${members.length} team members` : members?.length === 1 ? '1 team member' : 'No team members',
       icon: Users,
       color: 'text-purple-500 dark:text-purple-400',
       bgColor: 'bg-purple-50 dark:bg-purple-900/20',
-      loading: userLoading,
+      loading: memberLoading,
     },
   ];
 

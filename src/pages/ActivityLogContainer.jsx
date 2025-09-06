@@ -1,4 +1,3 @@
-import React from "react";
 import { useActivityLog } from "../components/ActivityLog/useActivityLog";
 import ActivityLogPresenter from "../components/ActivityLog/ActivityLogPresenter";
 
