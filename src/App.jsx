@@ -8,6 +8,8 @@ import { getUser } from "./redux/slices/authSlice";
 import TaskPage from "./pages/TaskPage";
 import TaskListPage from "./pages/TaskListPage";
 import ActivityLogContainer from "./pages/ActivityLogContainer";
+import NotFoundPage from "./pages/NotFoundPage";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,9 +23,14 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/recent-activities" element={<ActivityLogContainer />} />
-          <Route path="/tasks" element={<TaskListPage />} />
-          <Route path="/tasks/:taskId" element={<TaskPage />} />
+          { /** Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/recent-activities" element={<ActivityLogContainer />} />
+            <Route path="/tasks" element={<TaskListPage />} />
+            <Route path="/tasks/:taskId" element={<TaskPage />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>
     </ThemeProvider>

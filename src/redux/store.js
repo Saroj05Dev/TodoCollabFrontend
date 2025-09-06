@@ -4,6 +4,7 @@ import taskReducer from "./slices/taskSlice.js";
 import userReducer from "./slices/usersSlice.js";
 import attachmentReducer from "./slices/attachementSlice.js";
 import subtasksReducer from "./slices/subtasksSlice.js";
+import quickActionsSlice from "./slices/quickActionSlice.js";
 
 const store = configureStore ({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore ({
         task: taskReducer,
         users: userReducer,
         attachments: attachmentReducer,
-        subtasks: subtasksReducer
+        subtasks: subtasksReducer,
+        quickActions: quickActionsSlice
     }
 });
 
