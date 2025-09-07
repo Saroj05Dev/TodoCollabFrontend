@@ -31,7 +31,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         showToast('success', 'Signup successful!');
         setTimeout(() => {
           onClose();
-        })
+          onSwitchToLogin(); // Switch to Login Modal after successfully logging in
+        }, 1000)
       } else {
         showToast('error', 'Signup failed!');
       }

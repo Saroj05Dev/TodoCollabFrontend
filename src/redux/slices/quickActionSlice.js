@@ -22,7 +22,6 @@ export const inviteMember = createAsyncThunk(
   async ({ teamId, email }, thunkAPI) => {
     try {
       const response = await axiosInstance.post(`/teams/${teamId}/invite-member`, { email });
-      console.log("response", response);
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -86,7 +85,7 @@ const quickActionsSlice = createSlice({
       .addCase(createTeam.fulfilled, (state, action) => {
         state.loading = false;
         state.team = action.payload;
-        console.log("create team payload", action.payload);
+        state.members = action.payload.members;
         state.currentTeamId = action.payload._id;
         localStorage.setItem("currentTeamId", action.payload._id);
         state.successMessage = "Team created successfully!";
@@ -103,7 +102,6 @@ const quickActionsSlice = createSlice({
       .addCase(inviteMember.fulfilled, (state, action) => {
         state.loading = false;
         state.team = action.payload;
-        console.log("action.payload", action.payload);
         state.members = action.payload.members;
         state.successMessage = "Member invited successfully!";
       })

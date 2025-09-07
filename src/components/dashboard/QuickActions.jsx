@@ -5,13 +5,12 @@ import {
   createTeam,
   fetchTeamById,
   inviteMember,
-  setCurrentTeamId,
 } from "../../redux/slices/quickActionSlice";
 
 const QuickActions = () => {
   const dispatch = useDispatch();
   const quickActions = useSelector((state) => state.quickActions);
-  const { currentTeamId, members, loading, error, successMessage } =
+  const { currentTeamId, members, loading, successMessage } =
     quickActions || {};
 
   const [teamName, setTeamName] = useState("");
@@ -22,8 +21,10 @@ const QuickActions = () => {
     const storedTeamId = localStorage.getItem("currentTeamId");
     if(storedTeamId) {
       dispatch(fetchTeamById(storedTeamId));
+    } else if (currentTeamId) {
+      dispatch(fetchTeamById(currentTeamId));
     }
-  }, [dispatch]);
+  }, [dispatch, currentTeamId]);
 
   const handleCreateTeam = async () => {
     if (!teamName) return;
@@ -31,7 +32,7 @@ const QuickActions = () => {
       createTeam({ name: teamName, description })
     );
     if (createTeam.fulfilled.match(resultAction)) {
-      dispatch(setCurrentTeamId(resultAction.payload._id));
+      // The fetchTeamById will be triggered by the useEffect on currentTeamId change.
     }
     setTeamName("");
     setDescription("");
@@ -135,9 +136,9 @@ const QuickActions = () => {
             : "Invite team members to collaborate"}
         </p>
 
-        {error && (
+        {/* {error && (
           <p className="text-sm text-red-500 mt-2">{error.message || error}</p>
-        )}
+        )} */}
         {successMessage && (
           <p className="text-sm text-green-500 mt-2">{successMessage}</p>
         )}
