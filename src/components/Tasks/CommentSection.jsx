@@ -1,6 +1,6 @@
 import React from 'react';
 import { Loader, Send, Trash2, User } from 'lucide-react';
-import { formatTimeAgo } from './utils/dataUtils';
+import { formatTimeAgo } from './utils/dateUtils';
 
 const CommentSection = ({
   comments,

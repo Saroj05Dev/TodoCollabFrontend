@@ -220,7 +220,6 @@ export const useTaskLogic = (taskId) => {
       console.error("Smart assign error:", error);
 
       if (error.status === 409 || error.message?.includes("conflict")) {
-        // Handle conflict - you might need to adjust this based on your API response structure
         setConflictData({
           yourVersion: selectedTask,
           serverVersion: error.conflictingVersion || {

@@ -47,7 +47,6 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
       {isOpen && (
         <>
           <Toast toast={toast} />
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}

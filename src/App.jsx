@@ -10,6 +10,7 @@ import TaskListPage from "./pages/TaskListPage";
 import ActivityLogContainer from "./pages/ActivityLogContainer";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import SettingsPage from "./pages/SettingsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function App() {
             <Route path="/recent-activities" element={<ActivityLogContainer />} />
             <Route path="/tasks" element={<TaskListPage />} />
             <Route path="/tasks/:taskId" element={<TaskPage />} />
+            <Route path="/settings" element={<SettingsPage />}/>
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

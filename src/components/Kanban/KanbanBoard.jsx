@@ -73,7 +73,6 @@ const KanbanBoard = () => {
     const oldStatus = draggedTask.status;
     const updatedTask = { ...draggedTask, status: newStatus };
 
-    // Optimistic UI update
     setTasks((prev) => ({
       ...prev,
       [oldStatus]: (prev[oldStatus] || []).filter(

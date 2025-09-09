@@ -135,10 +135,7 @@ const QuickActions = () => {
             ? "Collaborate and manage tasks together"
             : "Invite team members to collaborate"}
         </p>
-
-        {/* {error && (
-          <p className="text-sm text-red-500 mt-2">{error.message || error}</p>
-        )} */}
+        
         {successMessage && (
           <p className="text-sm text-green-500 mt-2">{successMessage}</p>
         )}

@@ -118,6 +118,7 @@ const TaskListPage = () => {
             All Tasks
           </h1>
         </div>
+          <p className="text-gray-600 dark:text-gray-400 text-md leading-relaxed font-semibold">Click on a task to view details</p>
         <button
           onClick={() => setCreateOpen(true)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm"

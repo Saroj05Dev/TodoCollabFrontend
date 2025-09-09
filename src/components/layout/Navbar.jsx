@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SignupModal from "../Auth/SignupModal";
-import LoginModal from "../Auth/LoginModal"; // import Login modal
+import LoginModal from "../Auth/LoginModal";
 import {
   Sun,
   Moon,
@@ -83,7 +83,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              {/* Login button */}
               <button
                 onClick={() => setIsLoginOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors font-medium"
@@ -92,7 +91,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
                 Log In
               </button>
 
-              {/* Signup button */}
               <button
                 onClick={() => setIsSignupOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"

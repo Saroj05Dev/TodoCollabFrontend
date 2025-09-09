@@ -5,7 +5,7 @@ const TaskOverview = ({
   totalTasks, 
   inProgress, 
   inProgressCount, 
-  done,            // ✅ accept completed tasks array
+  done,
   doneCount, 
   completedCount, 
   isLoading 

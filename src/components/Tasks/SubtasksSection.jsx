@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Check, Trash2, Loader, ListTodo } from 'lucide-react';
 import { getStatusColor } from './utils/colorUtils';
-import { formatTimeAgo } from './utils/dataUtils';
+import { formatTimeAgo } from './utils/dateUtils';
 
 const SubtasksSection = ({
   subtasks,

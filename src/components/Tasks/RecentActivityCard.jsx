@@ -1,5 +1,5 @@
 import { Activity, User } from 'lucide-react';
-import { formatTimeAgo } from './utils/dataUtils';
+import { formatTimeAgo } from './utils/dateUtils';
 
 const RecentActivityCard = ({ activities, onNavigate }) => {
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, Calendar, Clock } from 'lucide-react';
-import { formatTimeAgo } from './utils/dataUtils';
+import { formatTimeAgo } from './utils/dateUtils';
 
 const TaskInfoGrid = ({ task }) => {
   return (

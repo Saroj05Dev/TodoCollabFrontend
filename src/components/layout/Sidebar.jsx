@@ -31,12 +31,10 @@ const Sidebar = ({ isOpen, onClose }) => {
   const handleItemClick = (itemId) => {
     setActiveItem(itemId);
     if (window.innerWidth < 1024) onClose();
-    // If you're using react-router, replace the button with <NavLink> to navigate.
-  };
+      };
 
   return (
     <>
-      {/* Overlay only on mobile/tablet */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -45,7 +43,6 @@ const Sidebar = ({ isOpen, onClose }) => {
         />
       )}
 
-      {/* IMPORTANT: no `lg:translate-x-0` here, let isOpen control it everywhere */}
       <aside
         aria-label="Sidebar"
         className={`fixed top-16 left-0 z-40 h-[calc(100vh-4rem)] w-64
@@ -75,11 +72,11 @@ const Sidebar = ({ isOpen, onClose }) => {
                       onClick={() => handleItemClick(item.id)}
                       className={({ isActive }) =>
                         `w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group
-      ${
-        isActive || activeItem === item.id
-          ? "bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 shadow-sm"
-          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
-      }`
+                      ${
+                        isActive || activeItem === item.id
+                          ? "bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 shadow-sm"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
+                      }`
                       }
                     >
                       <item.icon className="h-5 w-5" />
