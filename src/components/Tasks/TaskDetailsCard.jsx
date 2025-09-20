@@ -24,11 +24,11 @@ const TaskDetailsCard = ({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
           {task.title}
         </h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={onEdit}
             className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"

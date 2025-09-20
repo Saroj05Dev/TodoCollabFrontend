@@ -50,14 +50,6 @@ const Sidebar = ({ isOpen, onClose }) => {
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        {/* Close button on small screens */}
-        <button
-          onClick={onClose}
-          className="lg:hidden absolute right-2 top-2 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-          aria-label="Close sidebar"
-        >
-          <X className="h-5 w-5" />
-        </button>
 
         <div className="flex flex-col h-full overflow-y-auto">
           <nav className="flex-1 px-4 py-6">

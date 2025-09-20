@@ -64,9 +64,8 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Dashboard
             </h1>
-            <span className="text-2xl">🚀</span>
           </div>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-600 dark:text-gray-300 font-semibold leading-relaxed text-md">
             Welcome to your collaborative task workspace
           </p>
         </div>

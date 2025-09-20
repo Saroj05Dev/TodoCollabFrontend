@@ -12,6 +12,11 @@ import {
   Play,
   Pause,
   Trash2,
+  Paperclip,
+  MessageSquare,
+  List,
+  UserCheck,
+  UserPlus,
 } from "lucide-react";
 
 const getActionIcon = (type) => {
@@ -29,6 +34,20 @@ const getActionIcon = (type) => {
       return <Pause className={`${base} text-yellow-500`} />;
     case "deleted":
       return <Trash2 className={`${base} text-red-500`} />;
+    case "attachment_added":
+    case "attachment_deleted":
+      return <Paperclip className={`${base} text-cyan-500`} />;
+    case "comment_added":
+    case "comment_deleted":
+      return <MessageSquare className={`${base} text-indigo-500`} />;
+    case "subtask_added":
+    case "subtask_updated":
+    case "subtask_deleted":
+      return <List className={`${base} text-purple-500`} />;
+      case "assigned":
+      return <UserCheck className={`${base} text-purple-500`} />;
+      case "member_invited":
+      return <UserPlus className={`${base} text-green-500`} />;
     default:
       return <Activity className={`${base} text-gray-500`} />;
   }
@@ -48,8 +67,22 @@ const getActionText = (type) => {
       return "paused";
     case "deleted":
       return "deleted";
-    case "commented":
-      return "commented on";
+    case "comment_added":
+      return "commented";
+    case "attachment_added":
+      return "added attachment to";
+    case "attachment_deleted":
+      return "deleted attachment from";
+    case "subtask_added":
+      return "added subtask to";
+    case "subtask_updated":
+      return "updated subtask in";
+    case "subtask_deleted":
+      return "deleted subtask from";
+      case "assigned":
+      return "assigned to";
+      case "member_invited":
+      return "invited";
     default:
       return type ? type.toLowerCase() : "performed action on";
   }

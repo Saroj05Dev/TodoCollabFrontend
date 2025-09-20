@@ -111,17 +111,24 @@ const TaskListPage = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 p-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+        {/* Left: Icon + Title */}
         <div className="flex items-center gap-3">
           <ClipboardList className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white">
             All Tasks
           </h1>
         </div>
-          <p className="text-gray-600 dark:text-gray-400 text-md leading-relaxed font-semibold">Click on a task to view details</p>
+
+        {/* Middle: Description */}
+        <p className="text-gray-600 dark:text-gray-400 text-sm md:text-md leading-relaxed font-semibold">
+          Click on a task to view details
+        </p>
+
+        {/* Right: Button */}
         <button
           onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm self-start md:self-auto"
         >
           <Plus className="h-4 w-4" /> New Task
         </button>
