@@ -143,7 +143,7 @@ npm start
 
 <a id="contributing"></a>
 
-🤝 Contributing
+## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
 
@@ -157,7 +157,7 @@ Submit pull requests
 
 <a id="license"></a>
 
-📜 License
+## 📜 License
 
 This project is licensed under the MIT License – free to use and modify.
 
