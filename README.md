@@ -8,24 +8,25 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 
 - 🔗 **Frontend:** [foodcoma-frontend.netlify.app](https://foodcomaapp.netlify.app/)  
 - 🔗 **Backend API:** [foodcoma-api.onrender.com](https://foodcomabackend.onrender.com)  
-- 📦 **Frontend Repo:** [FoodComaFrontend](https://github.com/Saroj05Dev/FoodComaFrontend)
+- 📦 **Frontend Repo:** [FoodComaFrontend](https://github.com/Saroj05Dev/FoodComaFrontend)  
 - 📦 **Backend Repo:** [FoodComaBackend](https://github.com/Saroj05Dev/FoodComaBackend)
 
 ---
 
 ## 📑 Table of Contents
-- [🛠️ Tech Stack](#-tech-stack)
-- [📸 Screenshots](#-screenshots)
-- [🚀 Features](#-features)
-- [📁 Project Structure](#-project-structure)
-- [📂 Environment Variables](#-environment-variables)
-- [💻 Run Locally](#-run-locally)
-- [🙋‍♂️ Author](#-author)
-- [🤝 Contributing](#-contributing)
-- [📜 License](#-license)
+- [🛠️ Tech Stack](#tech-stack)
+- [📸 Screenshots](#screenshots)
+- [🚀 Features](#features)
+- [📁 Project Structure](#project-structure)
+- [📂 Environment Variables](#environment-variables)
+- [💻 Run Locally](#run-locally)
+- [🙋‍♂️ Author](#author)
+- [🤝 Contributing](#contributing)
+- [📜 License](#license)
 
 ---
 
+<a id="tech-stack"></a>
 ## 🛠️ Tech Stack
 
 | Layer        | Technologies                           |
@@ -39,6 +40,7 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 
 ---
 
+<a id="screenshots"></a>
 ## 📸 Screenshots
 
 ### 🏠 Home Page  
@@ -59,6 +61,7 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 
 ---
 
+<a id="features"></a>
 ## 🚀 Features
 
 ### 👤 User Features
@@ -80,6 +83,7 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 
 ---
 
+<a id="project-structure"></a>
 ## 📁 Project Structure
 
 ```bash
@@ -100,11 +104,13 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 ├── README.md
 └── package.json
 
+<a id="environment-variables"></a>
+
+📂 Environment Variables
 For Frontend
 VITE_BACKEND_URL="your backend api url"
 
 For Backend
-
 PORT=5000
 DB_URL='your mongodb url'
 JWT_SECRET='your jwt secret'
@@ -112,9 +118,10 @@ CLOUDINARY_API_KEY='your cloudinary api key'
 CLOUDINARY_API_SECRET='your cloudinary api secret'
 CLOUDINARY_CLOUD_NAME='your cloudinary name'
 
-## 💻 Run Locally
-Clone and Setup Frontend
+<a id="run-locally"></a>
 
+💻 Run Locally
+Clone and Setup Frontend
 git clone https://github.com/Saroj05Dev/FoodComaFrontend.git
 cd FoodComaFrontend
 npm install
@@ -126,15 +133,17 @@ cd FoodComaBackend
 npm install
 npm start
 
+<a id="author"></a>
 ## 🙋‍♂️ Author
 
-Saroj Kumar Das
+**Saroj Kumar Das**
 
-📧 Email: sarojkumardas.dev@gmail.com
+- 📧 Email: [sarojkumardas.dev@gmail.com](mailto:sarojkumardas.dev@gmail.com)  
+- 🔗 LinkedIn: [Saroj Kumar Das](https://www.linkedin.com/in/saroj-kumar-das-86a36b30a/)
 
-🔗 LinkedIn: Saroj Kumar Das
+<a id="contributing"></a>
 
-## 🤝 Contributing
+🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
 
@@ -146,7 +155,9 @@ Open issues for bugs or feature requests
 
 Submit pull requests
 
-## 📜 License
+<a id="license"></a>
+
+📜 License
 
 This project is licensed under the MIT License – free to use and modify.
 
