@@ -14,13 +14,13 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 ---
 
 ## 📑 Table of Contents
-- [🛠️ Tech Stack](#️-tech-stack)
+- [🛠️ Tech Stack](#-tech-stack)
 - [📸 Screenshots](#-screenshots)
 - [🚀 Features](#-features)
 - [📁 Project Structure](#-project-structure)
 - [📂 Environment Variables](#-environment-variables)
 - [💻 Run Locally](#-run-locally)
-- [🙋‍♂️ Author](#️-author)
+- [🙋‍♂️ Author](#-author)
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
 
