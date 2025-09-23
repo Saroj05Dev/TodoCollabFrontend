@@ -6,10 +6,10 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 
 ---
 
-- 🔗 **Frontend:** [foodcoma-frontend.vercel.app](#)  
-- 🔗 **Backend API:** [foodcoma-api.onrender.com](#)  
-- 📦 **Frontend Repo:** [FoodComaFrontend](#)  
-- 📦 **Backend Repo:** [FoodComaBackend](#)
+- 🔗 **Frontend:** [foodcoma-frontend.netlify.app](https://foodcomaapp.netlify.app/)  
+- 🔗 **Backend API:** [foodcoma-api.onrender.com](https://foodcomabackend.onrender.com)  
+- 📦 **Frontend Repo:** [FoodComaFrontend](https://github.com/Saroj05Dev/FoodComaFrontend)
+- 📦 **Backend Repo:** [FoodComaBackend](https://github.com/Saroj05Dev/FoodComaBackend)
 
 ---
 
@@ -42,16 +42,20 @@ It features a modern **UI design**, **Redux Toolkit state management**, secure *
 ## 📸 Screenshots
 
 ### 🏠 Home Page  
-<img src="https://github.com/user-attachments/assets/your-homepage-img" width="800"/>
+<img width="1891" height="865" alt="Screenshot 2025-09-23 135639" src="https://github.com/user-attachments/assets/4f1cb1a1-4a6a-4f02-a80b-81a01a78e14e" />
+
+### 🍕 Meal Page
+<img width="1914" height="838" alt="Screenshot 2025-09-23 135728" src="https://github.com/user-attachments/assets/e4f9d92a-1cb6-4c74-8224-85a4e8d33fae" />
+<img width="1892" height="866" alt="Screenshot 2025-09-23 135747" src="https://github.com/user-attachments/assets/53c8355b-5e6e-490d-a276-dee163336782" />
 
 ### 🍔 Menu Page  
-<img src="https://github.com/user-attachments/assets/your-menu-img" width="800"/>
+<img width="1894" height="860" alt="Screenshot 2025-09-23 135802" src="https://github.com/user-attachments/assets/d4ce7941-e109-4115-afc5-238ae74f4915" />
 
 ### 🛒 Cart Page  
-<img src="https://github.com/user-attachments/assets/your-cart-img" width="800"/>
+<img width="1895" height="862" alt="Screenshot 2025-09-23 135903" src="https://github.com/user-attachments/assets/79525ff7-f432-4f89-8740-d0e48ffb412c" />
 
 ### 📦 Order Page  
-<img src="https://github.com/user-attachments/assets/your-order-img" width="800"/>
+<img width="1914" height="815" alt="Screenshot 2025-09-23 135918" src="https://github.com/user-attachments/assets/0acc7899-028e-440a-8f10-c69a690c0a80" />
 
 ---
 
@@ -108,7 +112,7 @@ CLOUDINARY_API_KEY='your cloudinary api key'
 CLOUDINARY_API_SECRET='your cloudinary api secret'
 CLOUDINARY_CLOUD_NAME='your cloudinary name'
 
-💻 Run Locally
+## 💻 Run Locally
 Clone and Setup Frontend
 
 git clone https://github.com/Saroj05Dev/FoodComaFrontend.git
@@ -122,7 +126,7 @@ cd FoodComaBackend
 npm install
 npm start
 
-🙋‍♂️ Author
+## 🙋‍♂️ Author
 
 Saroj Kumar Das
 
@@ -130,7 +134,7 @@ Saroj Kumar Das
 
 🔗 LinkedIn: Saroj Kumar Das
 
-🤝 Contributing
+## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
 
@@ -142,7 +146,7 @@ Open issues for bugs or feature requests
 
 Submit pull requests
 
-📜 License
+## 📜 License
 
 This project is licensed under the MIT License – free to use and modify.
 
