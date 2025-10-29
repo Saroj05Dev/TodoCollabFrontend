@@ -38,12 +38,6 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // // Toast functionality
-  // const showToast = useCallback((type, message) => {
-  //   setToast({ show: true, type, message });
-  //   setTimeout(() => setToast({ show: false, type: "", message: "" }), 3000);
-  // }, []);
-
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 

@@ -4,7 +4,6 @@ import TaskHeader from "../components/Tasks/TaskHeader";
 import TaskDetailsCard from "../components/Tasks/TaskDetailsCard";
 import RecentActivityCard from "../components/Tasks/RecentActivityCard";
 import ConflictModal from "../components/Tasks/ConflictModal";
-import Toast from "../components/Tasks/Toast";
 import { useTaskLogic } from "../components/Tasks/useTaskLogic";
 import { useNavigate, useParams } from "react-router-dom";
 import EditTaskModal from "../components/Tasks/EditTaskModal";
@@ -29,7 +28,6 @@ const TaskPage = () => {
     showConflictModal,
     setShowConflictModal,
     resolveLoading,
-    toast,
     handleSmartAssign,
     handleResolveConflict,
     handleRefresh,
@@ -153,7 +151,6 @@ const TaskPage = () => {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <Toast toast={toast} />
 
       <TaskHeader onNavigate={navigate} />
 
