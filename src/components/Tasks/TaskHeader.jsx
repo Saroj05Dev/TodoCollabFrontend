@@ -13,7 +13,6 @@ const TaskHeader = ({ onNavigate }) => {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Task Details</h1>
-          <span className="text-2xl">📋</span>
         </div>
         <p className="text-gray-600 dark:text-gray-300">Manage and track task progress</p>
       </div>

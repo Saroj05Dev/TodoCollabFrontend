@@ -20,18 +20,25 @@ function App() {
     dispatch(getUser());
   }, [dispatch]);
 
-  // KEEP-ALIVE LOGIC: Ping the backend every 14 minutes to prevent idle spin-down.
+  // Keep Alive : Ping the backend every 14 minutes to prevent idle spin-down.
   useEffect(() => {
     const PING_INTERVAL = 840000; // 14 minutes in milliseconds
+    const PING_ENDPOINT = '/health'; // Changed from '/' to a dedicated health endpoint
 
     const pingBackend = async () => {
       try {
-        // Send a simple GET request to the backend's base URL
-        await axiosInstance.get("/");
+        // Send a simple GET request to the safe, unauthenticated endpoint
+        await axiosInstance.get(PING_ENDPOINT);
         console.log("Backend ping successful - Server kept alive.");
       } catch (error) {
-        // Log the error but continue running the timer
-        console.warn("Backend ping failed. Server may be spinning up or down.", error.message);
+        // Check if the error is a expected 401/404 during spin-up, or a network failure.
+        // If the server is just starting, it might fail initially. We ignore 
+        // non-critical errors so the interval keeps running.
+        if (error.response && [401, 404, 503].includes(error.response.status)) {
+             console.warn(`Backend ping returned ${error.response.status}. Server may be starting up.`);
+        } else {
+             console.error("Backend ping failed due to network or unknown error:", error.message);
+        }
       }
     };
 
@@ -44,7 +51,6 @@ function App() {
     // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
   }, []);
-  // END OF KEEP-ALIVE LOGIC
   
   return (
     <ThemeProvider>

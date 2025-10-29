@@ -18,15 +18,14 @@ const Layout = ({ children }) => {
   const closeSidebar = () => setIsSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       <Navbar onSidebarToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
-      <div className="flex">
+      <div className="flex flex-1"> 
         <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
-        {/* Shift content on desktop only when sidebar is open */}
         <main
-          className={`flex-1 flex flex-col pt-16 transition-[margin] duration-300 ${
+          className={`flex-1 flex flex-col transition-[margin] duration-300 min-h-0 pt-16 ${
             isSidebarOpen ? 'lg:ml-64' : 'lg:ml-0'
           }`}
         >

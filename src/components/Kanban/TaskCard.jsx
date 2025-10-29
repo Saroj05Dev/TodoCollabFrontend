@@ -37,7 +37,7 @@ const TaskCard = ({ task, onDragStart, onDragEnd }) => {
       draggable
       onDragStart={(e) => onDragStart(e, task)}
       onDragEnd={onDragEnd}
-      className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm cursor-move transition-all duration-200 hover:shadow-md group"
+      className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm cursor-grab transition-all duration-200 hover:shadow-md group"
     >
       <div className="flex items-start justify-between mb-3">
         <h4 className="font-medium text-gray-900 dark:text-white text-sm leading-tight flex-1 pr-2">

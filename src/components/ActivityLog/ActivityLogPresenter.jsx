@@ -119,8 +119,8 @@ export default function ActivityLogPresenter({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex justify-between items-start">
+      {/* Header - Ensure responsive gap/alignment */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -136,7 +136,7 @@ export default function ActivityLogPresenter({
         <button
           onClick={onRefresh}
           disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium"
+          className="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium"
         >
           <RefreshCw
             className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
@@ -186,14 +186,18 @@ export default function ActivityLogPresenter({
             activities.map((a) => (
               <div
                 key={a._id}
-                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full border flex items-center justify-center">
+                  {/* Icon */}
+                  <div className="w-10 h-10 rounded-full border flex items-center justify-center flex-shrink-0 mt-1">
                     {getActionIcon(a.actionType)}
                   </div>
+                  
+                  {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900 dark:text-white">
+                    {/* Activity Text */}
+                    <p className="text-sm text-gray-900 dark:text-white leading-relaxed">
                       <span className="font-medium">
                         {a.user?.fullName || "Unknown"}
                       </span>{" "}
@@ -216,17 +220,20 @@ export default function ActivityLogPresenter({
                         </span>
                         ) : a.metadata?.commentText ? (
                         <span className="font-medium text-indigo-600 dark:text-indigo-400">
-                          Subtask "{a.metadata.commentText}"
+                          Comment on "{a.metadata.commentText.slice(0, 20)}..."
                         </span>
                       ) : (
                         <span className="text-gray-500">Unknown</span>
                       )}
                     </p>
 
-                    <div className="mt-1 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    {/* Metadata (User/Time) - Changed from fixed gap to wrap on small screens */}
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-1">
                         <User className="h-3 w-3" />
-                        <span>{a.user?.email || "No email"}</span>
+                        <span className="truncate max-w-[150px] sm:max-w-none">
+                            {a.user?.email || "No email"}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
