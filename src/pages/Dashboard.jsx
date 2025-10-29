@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RefreshCw } from "lucide-react";
 import {
@@ -32,22 +32,22 @@ const Dashboard = () => {
 
   const isLoading = taskLoading || userLoading;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await Promise.all([
-          dispatch(fetchTaskCount()),
-          dispatch(fetchInProgressTask()),
-          dispatch(fetchDoneTasks()),
-          dispatch(fetchUserCount()),
-        ]);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    };
-    fetchData();
-  }, [dispatch]);
+  const fetchData = useCallback(async () => {
+    try {
+      await Promise.all([
+        dispatch(fetchTaskCount()),
+        dispatch(fetchInProgressTask()),
+        dispatch(fetchDoneTasks()),
+        dispatch(fetchUserCount()),
+      ]);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  }, [dispatch]); // Dependencies are only dispatch
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]); 
   const handleRefresh = () => {
     dispatch(fetchTaskCount());
     dispatch(fetchInProgressTask());

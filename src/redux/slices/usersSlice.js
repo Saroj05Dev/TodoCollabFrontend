@@ -8,7 +8,7 @@ export const fetchUserCount = createAsyncThunk(
       const response = await axiosInstance.get("/users/count");
       return response.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );

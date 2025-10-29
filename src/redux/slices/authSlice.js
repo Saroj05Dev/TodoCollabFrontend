@@ -38,14 +38,17 @@ export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
 });
 
 // Logout
-export const logoutUser = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
-  try {
-    await axiosInstance.post("/users/logout");
-    return true;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data || error.message);
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    try {
+      await axiosInstance.post("/users/logout");
+      return true;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
   }
-});
+);
 
 const initialState = {
   user: null,

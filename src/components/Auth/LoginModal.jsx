@@ -3,21 +3,18 @@ import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, X } from "lucide-react";
+import { Mail, Lock, X, Eye, EyeOff } from "lucide-react"; 
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
-import Toast from "../Tasks/Toast"
+import { notyf } from "../../helpers/notifier"; 
+
 export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auth);
+  const { loading: authLoading } = useSelector((state) => state.auth);
   const [form, setForm] = useState({ email: "", password: "" });
-    const [toast, setToast] = useState({ show: false, type: '', message: '' });
-
-  // Toast functionality
-    const showToast = useCallback((type, message) => {
-      setToast({ show: true, type, message });
-      setTimeout(() => setToast({ show: false, type: '', message: '' }), 3000);
-    }, []);
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,28 +22,37 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true); 
     try {
-      const response = await dispatch(login(form));
+      await dispatch(login(form)).unwrap();
 
-      if (response.type === "auth/login/fulfilled") {
-        showToast('success', 'Login successful!');
-        setTimeout(() => {
-          onClose();    
-        }, 1000);
-      } else {
-        showToast('error', 'Login failed!');
+      notyf.success('Login successful!');
+      setTimeout(() => {
+        onClose();    
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+
+      let errorMessage = "Login failed! Please check your credentials.";
+
+      if (error && typeof error === 'object' && error.message) {
+        errorMessage = error.message; 
+      } else if (typeof error === 'string') {
+        errorMessage = error;
       }
-    } catch (err) {
-      console.error(err);
-      showToast('error', err.message || 'Login failed!');
+      
+      notyf.error(errorMessage);
+    } finally {
+      setLoading(false); 
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          <Toast toast={toast} />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
@@ -101,7 +107,6 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
                     </div>
                   </div>
 
-                  {/* Password */}
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                       Password
@@ -112,23 +117,33 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
                         size={18}
                       />
                       <Input
-                        type="password"
+                        // Use showPassword state to toggle input type
+                        type={showPassword ? "text" : "password"} 
                         name="password"
                         placeholder="••••••••"
                         value={form.password}
                         onChange={handleChange}
-                        className="pl-10"
+                        className="pl-10 pr-10" // Ensure padding for the button
                         required
                       />
+                      {/* Toggle Button */}
+                      <button
+                          type="button"
+                          onClick={() => setShowPassword(prev => !prev)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                          aria-label="Toggle password visibility"
+                      >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
                     </div>
                   </div>
 
                   <Button
                     type="submit"
                     className="w-full rounded-xl text-base"
-                    disabled={loading}
+                    disabled={authLoading || loading}
                   >
-                    {loading ? "Logging in..." : "Log In"}
+                    {authLoading || loading ? "Logging in..." : "Log In"}
                   </Button>
                 </form>
 

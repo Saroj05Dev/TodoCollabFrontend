@@ -3,7 +3,7 @@ import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Lock, X } from "lucide-react";
+import { User, Mail, Lock, X, Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { signup } from "../../redux/slices/authSlice";
 import Toast from "../Tasks/Toast";
@@ -11,41 +11,79 @@ import Toast from "../Tasks/Toast";
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const dispatch = useDispatch();
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
-  const [toast, setToast] = useState({ show: false, type: '', message: '' });
-  
-  
-    // Toast functionality
-      const showToast = useCallback((type, message) => {
-        setToast({ show: true, type, message });
-        setTimeout(() => setToast({ show: false, type: '', message: '' }), 3000);
-      }, []);
+  const [toast, setToast] = useState({ show: false, type: "", message: "" });
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    let newErrors = {};
+    const { fullName, email, password } = form;
+
+    if (!fullName.trim()) newErrors.fullName = "Full Name is required.";
+    if (!email) newErrors.email = "Email is required.";
+    if (email && !/\S+@\S+\.\S+/.test(email))
+      newErrors.email = "Email address is invalid.";
+    if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters.";
+    } else if (
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/[0-9]/.test(password)
+    ) {
+      newErrors.password =
+        "Password must include uppercase, lowercase, a special character, and a number.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Toast functionality
+  const showToast = useCallback((type, message) => {
+    setToast({ show: true, type, message });
+    setTimeout(() => setToast({ show: false, type: "", message: "" }), 3000);
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await dispatch(signup(form));
-      if (response.type === "auth/signup/fulfilled") {
-        showToast('success', 'Signup successful!');
-        setTimeout(() => {
-          onClose();
-          onSwitchToLogin(); // Switch to Login Modal after successfully logging in
-        }, 1000)
-      } else {
-        showToast('error', 'Signup failed!');
-      }
-    } catch (error) {
-      console.log(error);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validate()) return; 
+
+  setLoading(true);
+  try {
+    await dispatch(signup(form)).unwrap(); 
+    
+    showToast("success", "Signup successful!");
+    setTimeout(() => {
+      onClose();
+      onSwitchToLogin(); // Switch to Login Modal after successfully logging in
+    }, 1000);
+
+  } catch (error) {
+    console.error("Signup Error:", error);
+    let errorMessage = "Signup failed! Please check your credentials.";
+
+    if (error && typeof error === 'object' && error.message) {
+      errorMessage = error.message; 
+    } else if (typeof error === 'string') {
+      errorMessage = error;
     }
-  };
+    showToast('error', errorMessage);
+    
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          <Toast toast={toast}/>
+          <Toast toast={toast} />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
@@ -128,7 +166,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                         size={18}
                       />
                       <Input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         name="password"
                         placeholder="••••••••"
                         value={form.password}
@@ -136,11 +174,30 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                         className="pl-10"
                         required
                       />
+                      {/* Toggle Button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        aria-label="Toggle password visibility"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </button>
                     </div>
+                    {/* Display password error */}
+                    {errors.password && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
-                  <Button type="submit" className="w-full rounded-xl text-base">
-                    Sign Up
+                  <Button type="submit" className="w-full rounded-xl text-base" disabled={loading}>
+                    {loading ? "Signing Up..." : "Sign Up"}
                   </Button>
                 </form>
 

@@ -41,6 +41,7 @@ const SubtasksSection = ({
             onChange={(e) => setNewSubtaskTitle(e.target.value)}
             placeholder="Add a new subtask..."
             className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            maxLength={80}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 onAddSubtask();

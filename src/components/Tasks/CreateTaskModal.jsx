@@ -16,6 +16,14 @@ const CreateTaskModal = ({ isOpen, onClose, onCreate, users }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Trim check for title
+    if (!formData.title.trim()) return;
+
+    if (formData.title.length > 100) {
+         alert("Task title is too long (max 100 characters).");
+         return;
+    }
+
     const payload = {
         ...formData,
         assignedUser: formData.assignedUser ? formData.assignedUser : null,
@@ -48,6 +56,7 @@ const CreateTaskModal = ({ isOpen, onClose, onCreate, users }) => {
             value={formData.title}
             onChange={handleChange}
             required
+            maxLength={100}
             className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
           />
 
