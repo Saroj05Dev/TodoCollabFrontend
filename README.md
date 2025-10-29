@@ -8,7 +8,7 @@ Users can create tasks, assign them to team members, track activity, add comment
 
 ## 🌐 Live Demo
 
-- Frontend: [Deployed Link](https://todo-collab-frontend-nm629s5kn-saroj-kumar-das-projects.vercel.app)  
+- Frontend: [Deployed Link](https://todo-collab-frontend.vercel.app)  
 - Backend API: [Deployed Link](https://todobaord.onrender.com)  
 - Frontend Repo: [TodoCollabFrontend](https://github.com/Saroj05Dev/TodoCollabFrontend)  
 - Backend Repo: [TodoCollabBackend](https://github.com/Saroj05Dev/TodoBaord)
