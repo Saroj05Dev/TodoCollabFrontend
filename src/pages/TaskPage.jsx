@@ -88,7 +88,7 @@ const TaskPage = () => {
       handleRefresh(); // refresh task details
     } catch (error) {
       console.log("update error", error);
-      // If it's a conflict → open modal
+      // If it's a conflict -> open modal
       if (error?.type === "conflict") {
         setConflictData({
           yourVersion: error.clientVersion,

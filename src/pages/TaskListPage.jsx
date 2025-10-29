@@ -12,6 +12,7 @@ import {
 import { createTask, deleteTask, fetchTasks } from "../redux/slices/taskSlice";
 import CreateTaskModal from "../components/Tasks/CreateTaskModal";
 import axiosInstance from "../helpers/axiosInstance";
+import { notyf } from "../helpers/notifier";
 
 const TaskListPage = () => {
   const dispatch = useDispatch();
@@ -69,9 +70,12 @@ const TaskListPage = () => {
     try {
       const createdTask = await dispatch(createTask(newTask)).unwrap();
       setCreateOpen(false);
+      notyf.success(`Task "${createdTask.title}" created successfully!`);
       navigate(`/tasks/${createdTask._id}`);
     } catch (error) {
       console.error("Error creating task:", error);
+      const errorMessage = error?.message || "Failed to create task.";
+      notyf.error(errorMessage);
     }
   };
 
@@ -79,10 +83,12 @@ const TaskListPage = () => {
   const handleDelete = async (taskId) => {
     try {
       await dispatch(deleteTask(taskId)).unwrap();
-      // refresh task list
+      notyf.success("Task deleted successfully!");
       dispatch(fetchTasks());
     } catch (error) {
       console.error("Error deleting task:", error);
+      const errorMessage = error?.message || "Failed to delete task.";
+      notyf.error(errorMessage);
     }
   };
 

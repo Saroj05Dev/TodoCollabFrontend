@@ -6,12 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, X, Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { signup } from "../../redux/slices/authSlice";
-import Toast from "../Tasks/Toast";
+import { notyf } from "../../helpers/notifier";
 
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const dispatch = useDispatch();
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
-  const [toast, setToast] = useState({ show: false, type: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -39,11 +38,11 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Toast functionality
-  const showToast = useCallback((type, message) => {
-    setToast({ show: true, type, message });
-    setTimeout(() => setToast({ show: false, type: "", message: "" }), 3000);
-  }, []);
+  // // Toast functionality
+  // const showToast = useCallback((type, message) => {
+  //   setToast({ show: true, type, message });
+  //   setTimeout(() => setToast({ show: false, type: "", message: "" }), 3000);
+  // }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -57,7 +56,7 @@ const handleSubmit = async (e) => {
   try {
     await dispatch(signup(form)).unwrap(); 
     
-    showToast("success", "Signup successful!");
+    notyf.success("success", "Signup successful!");
     setTimeout(() => {
       onClose();
       onSwitchToLogin(); // Switch to Login Modal after successfully logging in
@@ -72,8 +71,7 @@ const handleSubmit = async (e) => {
     } else if (typeof error === 'string') {
       errorMessage = error;
     }
-    showToast('error', errorMessage);
-    
+    notyf.error('error', errorMessage);
   } finally {
     setLoading(false);
   }
@@ -83,7 +81,6 @@ const handleSubmit = async (e) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          <Toast toast={toast} />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}

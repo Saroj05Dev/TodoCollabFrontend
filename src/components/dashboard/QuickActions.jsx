@@ -6,11 +6,12 @@ import {
   fetchTeamById,
   inviteMember,
 } from "../../redux/slices/quickActionSlice";
+import { notyf } from "../../helpers/notifier";
 
 const QuickActions = () => {
   const dispatch = useDispatch();
   const quickActions = useSelector((state) => state.quickActions);
-  const { currentTeamId, members, loading, successMessage } =
+  const { currentTeamId, members, loading, successMessage, error } =
     quickActions || {};
 
   const [teamName, setTeamName] = useState("");
@@ -28,19 +29,29 @@ const QuickActions = () => {
 
   const handleCreateTeam = async () => {
     if (!teamName) return;
-    const resultAction = await dispatch(
-      createTeam({ name: teamName, description })
-    );
-    if (createTeam.fulfilled.match(resultAction)) {
-      // The fetchTeamById will be triggered by the useEffect on currentTeamId change.
+    try {
+      const resultAction = await dispatch(
+        createTeam({ name: teamName, description })
+      ).unwrap();
+      notyf.success(`Team "${resultAction.name}" created!`); 
+    } catch (err) {
+      const errorMessage = err?.message || "Failed to create team.";
+      notyf.error(errorMessage); 
     }
+
     setTeamName("");
     setDescription("");
   };
 
-  const handleInviteMember = () => {
+  const handleInviteMember = async () => {
     if (!inviteEmail || !currentTeamId) return;
-    dispatch(inviteMember({ teamId: currentTeamId, email: inviteEmail }));
+    try {
+      await dispatch(inviteMember({ teamId: currentTeamId, email: inviteEmail })).unwrap();
+      notyf.success(`Invitation sent to ${inviteEmail}`); 
+    } catch (err) {
+      const errorMessage = err?.message || `Failed to invite ${inviteEmail}.`;
+      notyf.error(errorMessage); 
+    }
     setInviteEmail("");
   };
 
